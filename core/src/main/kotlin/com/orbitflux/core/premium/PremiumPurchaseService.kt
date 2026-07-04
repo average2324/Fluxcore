@@ -24,6 +24,10 @@ sealed class PremiumPurchaseResult {
 interface PremiumPurchaseService {
     fun refreshStatus(onResult: (PremiumStatus) -> Unit)
     fun launchPremiumPurchase(onResult: (PremiumPurchaseResult) -> Unit)
+
+    // User-tapped "Restore Purchases" (App Store Guideline 3.1.1). Default is a plain
+    // status refresh; platforms that need an explicit restore call (iOS StoreKit) override.
+    fun restorePurchases(onResult: (PremiumStatus) -> Unit) = refreshStatus(onResult)
 }
 
 object UnavailablePremiumPurchaseService : PremiumPurchaseService {

@@ -31,6 +31,7 @@ class IosPremiumPurchaseService(
     private var cachedOwned = false
     private var activeRequest: SKProductsRequest? = null
     private var activePurchaseCallback: ((PremiumPurchaseResult) -> Unit)? = null
+    private var activeRestoreCallback: ((PremiumStatus) -> Unit)? = null
 
     private val transactionObserver =
         object : SKPaymentTransactionObserverAdapter() {
@@ -46,6 +47,12 @@ class IosPremiumPurchaseService(
             override fun restoreCompletedTransactionsFinished(queue: SKPaymentQueue) {
                 activePurchaseCallback?.invoke(PremiumPurchaseResult.Success(cachedProduct))
                 activePurchaseCallback = null
+                activeRestoreCallback?.invoke(
+                    currentStatus(
+                        message = if (cachedOwned) null else "No previous purchase found to restore",
+                    ),
+                )
+                activeRestoreCallback = null
             }
 
             override fun restoreCompletedTransactionsFailed(
@@ -54,6 +61,8 @@ class IosPremiumPurchaseService(
             ) {
                 activePurchaseCallback?.invoke(PremiumPurchaseResult.Failed(error.localizedDescription))
                 activePurchaseCallback = null
+                activeRestoreCallback?.invoke(currentStatus(message = error.localizedDescription))
+                activeRestoreCallback = null
             }
         }
 
@@ -106,9 +115,31 @@ class IosPremiumPurchaseService(
         }
     }
 
+    override fun restorePurchases(onResult: (PremiumStatus) -> Unit) {
+        if (!SKPaymentQueue.canMakePayments()) {
+            onResult(currentStatus(message = "App Store purchases are disabled on this device"))
+            return
+        }
+        onResult(currentStatus(isLoading = true))
+        activeRestoreCallback = onResult
+        queue.restoreCompletedTransactions()
+    }
+
     fun refreshCachedOwnership() {
         queue.restoreCompletedTransactions()
     }
+
+    private fun currentStatus(
+        isLoading: Boolean = false,
+        message: String? = null,
+    ): PremiumStatus =
+        PremiumStatus(
+            isOwned = cachedOwned,
+            isLoading = isLoading,
+            isAvailableForPurchase = product != null && SKPaymentQueue.canMakePayments(),
+            product = cachedProduct,
+            message = message,
+        )
 
     private fun loadProduct(onComplete: (PremiumProduct?, String?) -> Unit) {
         cachedProduct?.let {

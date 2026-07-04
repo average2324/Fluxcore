@@ -1186,7 +1186,7 @@ class GameScreen(
 
         when {
             contains(premiumPurchaseButtonRect(), tempTouch.x, tempTouch.y) -> triggerPremiumPurchase()
-            contains(premiumRefreshButtonRect(), tempTouch.x, tempTouch.y) -> refreshPremiumStoreStatus()
+            contains(premiumRefreshButtonRect(), tempTouch.x, tempTouch.y) -> refreshPremiumStoreStatus(restore = true)
             contains(premiumBackButtonRect(), tempTouch.x, tempTouch.y) -> closePremiumPage()
         }
     }
@@ -2121,7 +2121,7 @@ class GameScreen(
         dependencies.bannerAdService.setBannerVisible(shouldShow)
     }
 
-    private fun refreshPremiumStoreStatus(showLoading: Boolean = true) {
+    private fun refreshPremiumStoreStatus(showLoading: Boolean = true, restore: Boolean = false) {
         if (showLoading) {
             premiumStoreStatus = premiumStoreStatus.copy(
                 isOwned = premiumEnabled,
@@ -2129,7 +2129,10 @@ class GameScreen(
                 message = null
             )
         }
-        dependencies.premiumPurchaseService.refreshStatus { result ->
+        val request: ((PremiumStatus) -> Unit) -> Unit =
+            if (restore) dependencies.premiumPurchaseService::restorePurchases
+            else dependencies.premiumPurchaseService::refreshStatus
+        request { result ->
             Gdx.app.postRunnable {
                 val resolvedOwned = when {
                     result.isOwned -> true
@@ -4982,7 +4985,7 @@ class GameScreen(
         )
         drawButton(
             refreshRect,
-            if (premiumEnabled) t("VERIFY OWNERSHIP", "SAHİPLİĞİ DOĞRULA") else t("REFRESH STORE", "MAĞAZAYI YENİLE"),
+            if (premiumEnabled) t("VERIFY OWNERSHIP", "SAHİPLİĞİ DOĞRULA") else t("RESTORE PURCHASES", "SATIN ALIMLARI GERİ YÜKLE"),
             chromeInk
         )
         drawButton(backRect, t("BACK", "GERİ"), chromeInk)
