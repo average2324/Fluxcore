@@ -1,0 +1,25 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.autobuild.enabled": false,
+  "java.import.gradle.enabled": true,
+  "java.import.gradle.wrapper.enabled": true,
+  "java.import.exclusions": [
+    "**/bin/**"
+  ],
+  "java.project.outputPath": "out",
+  "java.project.resourceFilters": [
+    "build",
+    ".gradle",
+    "bin"
+  ],
+  "files.watcherExclude": {
+    "**/.gradle/**": true,
+    "**/build/**": true,
+    "**/bin/**": true
+  },
+  "search.exclude": {
+    "**/.gradle": true,
+    "**/build": true,
+    "**/bin": true
+  }
+}

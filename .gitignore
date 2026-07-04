@@ -1,0 +1,43 @@
+# Gradle
+.gradle/
+build/
+**/bin/
+.kotlin/
+
+# IntelliJ/Android Studio
+.idea/
+*.iml
+local.properties
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Release signing and secrets
+android/keystore.properties
+android/keystore/
+ios/signing/
+ios/*.mobileprovision
+ios/*.p12
+ios/*.cer
+ios/*.p8
+*.jks
+*.keystore
+
+# Build outputs and local reports
+android/build/
+android/assets/
+android/src/main/jniLibs/
+core/build/
+desktop/build/
+ios/build/
+build/reports/
+qa_captures/
+
+# GitHub/App Store secret material
+*.mobileprovision
+*.provisionprofile
+*.p12
+*.cer
+*.p8
+api_key_info.json

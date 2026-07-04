@@ -1,0 +1,28 @@
+<config>
+    <mainClass>com.orbitflux.ios.IosLauncherKt</mainClass>
+    <executableName>FluxCore</executableName>
+    <os>ios</os>
+    <target>ios</target>
+    <arch>arm64</arch>
+    <iosInfoPList>Info.plist.xml</iosInfoPList>
+    <resources>
+        <resource>
+            <directory>../assets</directory>
+        </resource>
+        <resource>
+            <directory>data</directory>
+        </resource>
+    </resources>
+    <frameworks>
+        <framework>AudioToolbox</framework>
+        <framework>AVFoundation</framework>
+        <framework>CoreGraphics</framework>
+        <framework>CoreMotion</framework>
+        <framework>Foundation</framework>
+        <framework>OpenAL</framework>
+        <framework>OpenGLES</framework>
+        <framework>QuartzCore</framework>
+        <framework>StoreKit</framework>
+        <framework>UIKit</framework>
+    </frameworks>
+</config>

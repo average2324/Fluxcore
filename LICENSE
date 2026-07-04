@@ -1,0 +1,16 @@
+FluxCore Proprietary License
+
+Copyright (c) 2026 Lumina Digitale.
+All rights reserved.
+
+FluxCore source code, gameplay logic, visual identity, original assets, build
+configuration, and distribution materials are proprietary unless a specific file
+or third-party notice states otherwise.
+
+No permission is granted to copy, publish, distribute, sublicense, sell, host,
+train on, reverse engineer, or create derivative works from this project without
+prior written permission from the rights holder.
+
+This repository may include third-party components under their own licenses.
+Those notices are documented separately in THIRD_PARTY_NOTICES.md and apply only
+to the referenced third-party materials, not to FluxCore as a whole.

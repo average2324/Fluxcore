@@ -1,0 +1,18 @@
+FluxCore Original Music Notice
+==============================
+
+Track:
+- fluxcore_ui_theme.wav
+
+Copyright:
+- Copyright (c) FluxCore project authors.
+
+Source and Licensing:
+- This track was generated in-house for FluxCore using procedural synthesis.
+- No third-party melody, sample pack, or copyrighted recording was imported.
+- You may use this file only as part of FluxCore and its official builds unless
+  the project owner provides separate written permission.
+
+Compliance intent:
+- Added to reduce legal risk in distribution stores by avoiding unverified
+  external music assets.

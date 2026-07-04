@@ -1,0 +1,57 @@
+plugins {
+    id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jlleitschuh.gradle.ktlint'
+}
+
+apply plugin: 'com.mobidevelop.robovm'
+
+def gdxVersion = '1.14.2'
+def robovmVersion = '2.3.25'
+def envNonBlank = { name ->
+    def value = System.getenv(name)
+    value == null || value.trim().isEmpty() ? null : value
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+sourceSets.main.resources.srcDirs = [rootProject.file('assets')]
+
+dependencies {
+    implementation project(':core')
+    implementation "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+    implementation "com.mobidevelop.robovm:robovm-rt:$robovmVersion"
+    implementation "com.mobidevelop.robovm:robovm-cocoatouch:$robovmVersion"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 8
+}
+
+robovm {
+    iosSkipSigning = (envNonBlank('IOS_SKIP_SIGNING') ?: 'true').toBoolean()
+    iosSignIdentity = envNonBlank('IOS_SIGN_IDENTITY')
+    iosProvisioningProfile = envNonBlank('IOS_PROVISIONING_PROFILE')
+}
+
+tasks.matching { it.name == 'createIPA' || it.name == 'robovmArchive' }.configureEach {
+    onlyIf {
+        def ciSignedBuild = System.getenv('IOS_SKIP_SIGNING') == 'false'
+        if (!ciSignedBuild) {
+            logger.lifecycle('Skipping signed iOS archive because IOS_SKIP_SIGNING is not false.')
+        }
+        return ciSignedBuild
+    }
+}

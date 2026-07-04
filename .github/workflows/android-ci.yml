@@ -1,0 +1,53 @@
+name: Android Verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      ORBITFLUX_VERSION_CODE: ${{ github.run_number }}
+      ORBITFLUX_VERSION_NAME: 0.2.${{ github.run_number }}
+      ORBITFLUX_ADMOB_APP_ID: ${{ secrets.ORBITFLUX_ADMOB_APP_ID }}
+      ORBITFLUX_ADMOB_BANNER_UNIT_ID: ${{ secrets.ORBITFLUX_ADMOB_BANNER_UNIT_ID }}
+      ORBITFLUX_ADMOB_REWARDED_UNIT_ID: ${{ secrets.ORBITFLUX_ADMOB_REWARDED_UNIT_ID }}
+      ORBITFLUX_PREMIUM_PRODUCT_ID: ${{ secrets.ORBITFLUX_PREMIUM_PRODUCT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform
+        run: sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build, lint, and test
+        run: ./gradlew --no-daemon --stacktrace :core:test :android:lint :android:assembleDebug :android:bundleRelease
+
+      - name: Desktop smoke run
+        run: xvfb-run --auto-servernum ./gradlew --no-daemon :desktop:smokeRun
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-artifacts
+          path: |
+            android/build/outputs/apk/debug/*.apk
+            android/build/outputs/bundle/release/*.aab
+            android/build/reports/lint-results-debug.*
