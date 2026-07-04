@@ -511,8 +511,8 @@ class GameScreen(
         TutorialStep(
             titleEn = "Use Recovery Help",
             titleTr = "Yardımı Kullan",
-            detailEn = "After failures, use rewarded help for life/shield and watch the support panel.",
-            detailTr = "Kaybedince can/kalkan yardımı için ödüllü reklamı kullan ve destek panelini takip et.",
+            detailEn = "After failures, use support tools for life/shield and watch the support panel.",
+            detailTr = "Kaybedince can/kalkan yardımı için destek araçlarını kullan ve destek panelini takip et.",
             anchor = TutorialAnchor.SUPPORT_PANEL
         )
     )
@@ -2178,13 +2178,21 @@ class GameScreen(
                             message = null
                         )
                         applyPremiumOwnership(true)
+                        val successBody = if (adsEnabled()) {
+                            t(
+                                "FluxCore Premium is now active. Ads are removed and lives are unlimited on this device.",
+                                "FluxCore Premium artık aktif. Reklamlar kaldırıldı ve bu cihazda can sınırı kalktı."
+                            )
+                        } else {
+                            t(
+                                "FluxCore Premium is now active. Lives are unlimited on this device.",
+                                "FluxCore Premium artık aktif. Bu cihazda can sınırı kalktı."
+                            )
+                        }
                         showPremiumDialog(
                             type = PremiumDialogType.SUCCESS,
                             title = t("PURCHASE COMPLETE", "SATIN ALMA TAMAMLANDI"),
-                            body = t(
-                                "FluxCore Premium is now active. Ads are removed and lives are unlimited on this device.",
-                                "FluxCore Premium artık aktif. Reklamlar kaldırıldı ve bu cihazda can sınırı kalktı."
-                            ),
+                            body = successBody,
                             primaryLabel = t("START PREMIUM", "PREMIUM BAŞLAT"),
                             secondaryLabel = t("STAY HERE", "BURADA KAL"),
                             tone = ChipTone.SUCCESS
@@ -5097,6 +5105,11 @@ class GameScreen(
         titleFont.draw(batch, title, centeredX(title, true), panel.y + panel.height - sy(48f))
         val subtitle = if (selectedShopCategory == ShopCategory.SHIPS) {
             t("Choose a ship style and equip it. Open SHIELDS to buy shield stock.", "Gemi stilini seç ve aktif et. Kalkan stokunu KALKAN sekmesinden al.")
+        } else if (!adsEnabled()) {
+            t(
+                "Support items: Impact Shield blocks one hit, Time Slow briefly slows hazards. Buy support stock with coins.",
+                "Destek öğeleri: Darbe Kalkanı bir çarpışmayı engeller, Zaman Yavaşlatma kısa süre tehlikeleri yavaşlatır. Destek stokunu coin ile al."
+            )
         } else {
             t(
                 "Support items: Impact Shield blocks one hit, Time Slow slows hazards briefly. Buy with coins; shield can also come from ads.",
@@ -6029,6 +6042,8 @@ class GameScreen(
             val offerTitle = t("OFFER", "TEKLİF")
             val offerBody = if (levelClearDoubleClaimed) {
                 t("Coin reward already doubled for this level.", "Bu bölüm için coin ödülü zaten ikiye katlandı.")
+            } else if (!adsEnabled()) {
+                t("Premium keeps runs focused with unlimited lives.", "Premium sınırsız canla koşuları odaklı tutar.")
             } else {
                 t("Watch a rewarded ad and double your level coins now.", "Ödüllü reklam izle ve bölüm coin ödülünü şimdi ikiye katla.")
             }
@@ -10485,8 +10500,8 @@ class GameScreen(
                 BlockBriefingStep(
                     titleEn = "Late Campaign Economy",
                     titleTr = "Geç Kampanya Ekonomisi",
-                    detailEn = "Coin gain is lower in this stage. Plan support usage and ad multipliers carefully.",
-                    detailTr = "Bu etapta coin kazanımı düşüktür. Destek kullanımını ve reklam çarpanını planlı kullan.",
+                    detailEn = "Coin gain is lower in this stage. Plan support usage and coin spending carefully.",
+                    detailTr = "Bu etapta coin kazanımı düşüktür. Destek kullanımını ve coin harcamasını planlı kullan.",
                     anchor = TutorialAnchor.READY_CARD
                 )
             )
@@ -10508,8 +10523,8 @@ class GameScreen(
                 BlockBriefingStep(
                     titleEn = "Economy Pressure",
                     titleTr = "Ekonomi Baskısı",
-                    detailEn = "Coin gain is tight here. Plan ads and support spending per run.",
-                    detailTr = "Bu bölgede coin kazanımı düşüktür. Reklam ve destek harcamasını koşu bazında planla.",
+                    detailEn = "Coin gain is tight here. Plan support spending per run.",
+                    detailTr = "Bu bölgede coin kazanımı düşüktür. Destek harcamasını koşu bazında planla.",
                     anchor = TutorialAnchor.READY_CARD
                 )
             )
@@ -11753,6 +11768,65 @@ class GameScreen(
     }
 
     private fun policyPrivacy(): String {
+        if (!adsEnabled()) {
+            val en = """
+                FLUXCORE – iOS PRIVACY, PREMIUM, AND VIRTUAL ITEMS POLICY
+                Last Updated: 04.07.2026
+                This policy applies to the iOS App Store version of FluxCore.
+
+                1. Advertising
+                The iOS App Store version does not include advertising SDKs and does not show banner, interstitial, or rewarded ads.
+
+                2. Purchases and Premium
+                FluxCore Premium, when offered, is a non-consumable one-time purchase processed by Apple App Store / StoreKit.
+                The developer does not collect or store full payment card information.
+                Premium ownership is used only to unlock premium gameplay rules such as unlimited lives on this device.
+
+                3. Gameplay and Local Data
+                FluxCore may store gameplay progress, settings, lives, shields, coins, equipped ships, premium status, and preferences locally on the device.
+                This data is used to operate the game, restore progress, and provide purchased or earned gameplay features.
+
+                4. Virtual Items
+                Coins, ships, shields, premium benefits, and other virtual items are for in-game use only.
+                They have no cash value, are non-transferable, and may not be sold, exchanged, or redeemed for money.
+
+                5. Abuse and Security
+                Cheating, purchase abuse, save manipulation, reverse engineering, bot/script use, or unauthorized system activity may lead to restricted access or loss of in-game progress.
+
+                6. Contact
+                For privacy questions, support requests, or legal notices, contact:
+                luminadigitale@gmail.com
+            """.trimIndent()
+            val tr = """
+                FLUXCORE – iOS GİZLİLİK, PREMIUM VE SANAL ÖĞE POLİTİKASI
+                Son Güncelleme: 04.07.2026
+                Bu politika FluxCore'un iOS App Store sürümü için geçerlidir.
+
+                1. Reklamlar
+                iOS App Store sürümü reklam SDK'sı içermez ve banner, geçiş veya ödüllü reklam göstermez.
+
+                2. Satın Alımlar ve Premium
+                FluxCore Premium sunulduğunda, Apple App Store / StoreKit üzerinden işlenen tüketilemeyen tek seferlik satın alımdır.
+                Geliştirici tam ödeme kartı bilgilerini toplamaz veya saklamaz.
+                Premium sahipliği yalnızca bu cihazda sınırsız can gibi premium oyun kurallarını açmak için kullanılır.
+
+                3. Oyun ve Yerel Veri
+                FluxCore oyun ilerlemesi, ayarlar, canlar, kalkanlar, coinler, seçili gemiler, premium durumu ve tercihleri cihazda yerel olarak saklayabilir.
+                Bu veriler oyunu çalıştırmak, ilerlemeyi geri yüklemek ve satın alınan veya kazanılan oyun özelliklerini sunmak için kullanılır.
+
+                4. Sanal Öğeler
+                Coinler, gemiler, kalkanlar, premium avantajlar ve diğer sanal öğeler yalnızca oyun içi kullanım içindir.
+                Gerçek para değeri taşımaz, devredilemez, satılamaz, takas edilemez ve nakde çevrilemez.
+
+                5. Kötüye Kullanım ve Güvenlik
+                Hile, satın alma suistimali, kayıt verisi manipülasyonu, tersine mühendislik, bot/script kullanımı veya yetkisiz sistem etkinliği erişim kısıtına veya oyun ilerlemesinin kaybına yol açabilir.
+
+                6. İletişim
+                Gizlilik soruları, destek talepleri veya yasal bildirimler için:
+                luminadigitale@gmail.com
+            """.trimIndent()
+            return t(en, tr)
+        }
         val en = """
             FLUXCORE – ADS, PREMIUM, AND VIRTUAL ITEMS POLICY
             Last Updated: 28.03.2026
@@ -11859,6 +11933,99 @@ class GameScreen(
     }
 
     private fun policyTerms(): String {
+        if (!adsEnabled()) {
+            val en = """
+                FLUXCORE – iOS TERMS OF USE
+                Last Updated: 04.07.2026
+                By downloading, installing, accessing, or playing FluxCore, you accept these Terms.
+
+                1. Description of the Service
+                FluxCore is a reflex and timing focused space survival game with levels, lives, shields, coins, premium features, virtual items, and multilingual support.
+                The iOS App Store version does not show ads.
+
+                2. Eligibility
+                You represent that you meet your local digital consent age and have parental/legal permission where required.
+
+                3. License
+                You are granted a limited, revocable, non-transferable, non-exclusive license for personal, non-commercial use.
+                You may not copy, sell, rent, redistribute, reverse engineer, manipulate security/economy/premium systems, use cheats/bots/scripts/exploits, or interfere with operation.
+
+                4. Gameplay Experience and Accessibility
+                FluxCore may contain bright light effects, rapid movement, sudden visual transitions, and flashing/rhythmic patterns.
+                The game may not be suitable for light-sensitive users.
+
+                5. In-Game Systems
+                FluxCore may include lives, shields, coins, hangar/shop systems, premium access, and virtual items.
+                Scope, pricing, balance, and availability may change over time.
+
+                6. Premium, Purchases, and Virtual Items
+                Premium, when offered, is a one-time non-consumable purchase processed by Apple App Store / StoreKit.
+                Virtual items are non-transferable, may not be sold/exchanged/cashed out, and have no real-world monetary value.
+
+                7. Progress, Storage, and Data Retention
+                Progress may be stored locally and/or via platform services.
+                Data loss or sync mismatch may occur due to device/app/platform/technical issues.
+
+                8. Prohibited Conduct
+                Cheating, exploit use, unfair advantage, payment abuse, platform rule violations, unlawful use, and technical sabotage are prohibited.
+
+                9. Updates and Changes
+                FluxCore may change level structure, visuals, balance, economy, premium scope, and infrastructure over time.
+
+                10. Contact
+                luminadigitale@gmail.com
+
+                FLUXCORE – HEALTH AND SAFETY WARNING
+                FluxCore may contain bright, fast, and flashing visual effects. Stop playing immediately if eye strain, dizziness, nausea, severe headache, disorientation, or seizure-like symptoms occur.
+                Play in a well-lit room, lower brightness, take regular breaks, avoid long sessions, and avoid playing while tired.
+            """.trimIndent()
+            val tr = """
+                FLUXCORE – iOS KULLANIM ŞARTLARI
+                Son Güncelleme: 04.07.2026
+                FluxCore oyununu indirerek, kurarak, erişerek veya oynayarak bu Şartları kabul etmiş olursunuz.
+
+                1. Hizmetin Tanımı
+                FluxCore; seviyeler, can sistemi, kalkan sistemi, coin, premium özellikler, sanal öğeler ve çoklu dil desteği içerebilen refleks tabanlı bir uzay hayatta kalma oyunudur.
+                iOS App Store sürümü reklam göstermez.
+
+                2. Uygunluk
+                Yerel dijital onay yaşını karşıladığınızı ve gerekli durumlarda ebeveyn/yasal temsilci iznine sahip olduğunuzu kabul edersiniz.
+
+                3. Lisans ve Kullanım Hakkı
+                FluxCore'u kişisel ve ticari olmayan amaçla kullanmanız için sınırlı, geri alınabilir, devredilemez, münhasır olmayan lisans verilir.
+                Oyunu kopyalamak, satmak, kiralamak, yeniden dağıtmak, tersine mühendislik yapmak, güvenlik/ekonomi/premium sistemlerini manipüle etmek, hile-bot-script-exploit kullanmak yasaktır.
+
+                4. Oyun Deneyimi ve Erişilebilirlik
+                Oyunda parlak ışık, hızlı hareket, ani görsel geçişler ve ritmik/yanıp sönen efektler bulunabilir.
+                Işığa duyarlı kullanıcılar için uygun olmayabilir.
+
+                5. Oyun İçi Sistemler
+                FluxCore içinde can, kalkan, coin, hangar/mağaza, premium erişim ve sanal öğeler bulunabilir.
+                Kapsam, denge, fiyatlandırma ve erişim koşulları zamanla değişebilir.
+
+                6. Premium, Satın Alımlar ve Sanal Öğeler
+                Premium sunulduğunda, Apple App Store / StoreKit üzerinden işlenen tüketilemeyen tek seferlik satın alımdır.
+                Coin, gemi, kalkan, premium avantajlar ve sanal öğeler gerçek para değeri taşımaz; devredilemez, satılamaz, takas edilemez, nakde çevrilemez.
+
+                7. İlerleme ve Veri Saklama
+                İlerleme verileri cihazda ve/veya platform hizmetlerinde saklanabilir.
+                Teknik nedenlerle veri kaybı veya senkronizasyon hatası yaşanabilir.
+
+                8. Yasaklı Kullanımlar
+                Oyun dengesini bozma, haksız avantaj, ödeme suistimali, platform kurallarını ihlal etme, yasa dışı kullanım ve teknik sabotaj yasaktır.
+
+                9. Güncellemeler ve Değişiklikler
+                Seviye yapısı, görseller, zorluk, coin ekonomisi, premium kapsamı ve teknik altyapı değiştirilebilir.
+
+                10. İletişim
+                luminadigitale@gmail.com
+
+                FLUXCORE – SAĞLIK VE GÜVENLİK UYARISI
+                FluxCore parlak, hızlı ve yanıp sönen görsel efektler içerebilir. Göz yorgunluğu, baş dönmesi, mide bulantısı, şiddetli baş ağrısı, bilinç bulanıklığı veya nöbet benzeri belirti olursa hemen oynamayı bırakın.
+                İyi aydınlatılmış ortamda oynayın, parlaklığı düşürün, düzenli mola verin, uzun oturumlardan kaçının ve yorgunken oynamayın.
+            """.trimIndent()
+            return t(en, tr)
+        }
         val en = """
             FLUXCORE – TERMS OF USE
             Last Updated: 28.03.2026

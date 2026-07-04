@@ -19,6 +19,7 @@ jobs:
   build-ios:
     runs-on: macos-26
     env:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8"
       ORBITFLUX_IOS_PREMIUM_PRODUCT_ID: ${{ secrets.ORBITFLUX_IOS_PREMIUM_PRODUCT_ID }}
       IOS_SKIP_SIGNING: ${{ secrets.IOS_SKIP_SIGNING }}
       IOS_SIGN_IDENTITY: ${{ secrets.IOS_SIGN_IDENTITY }}
