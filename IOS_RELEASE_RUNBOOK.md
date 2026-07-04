@@ -44,7 +44,8 @@ Set these in the private repository only:
 - `IOS_PROVISIONING_PROFILE_BASE64`: base64 of the `.mobileprovision`.
 - `APP_STORE_CONNECT_KEY_ID`: App Store Connect API key ID.
 - `APP_STORE_CONNECT_ISSUER_ID`: App Store Connect issuer ID.
-- `APP_STORE_CONNECT_API_KEY_P8`: full `.p8` private key content.
+- `APP_STORE_CONNECT_API_KEY_P8_BASE64`: base64 of the full `.p8` private key content. Recommended because it avoids multiline copy issues.
+- `APP_STORE_CONNECT_API_KEY_P8`: full `.p8` private key content. Use only if not using the base64 secret above.
 - `ORBITFLUX_IOS_PREMIUM_PRODUCT_ID`: defaults to `fluxcore_premium` if omitted.
 
 Do not add AdMob or UMP iOS secrets for Model A.
