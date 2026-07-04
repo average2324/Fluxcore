@@ -42,7 +42,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Verify shared code and iOS launcher
-        run: ./gradlew --no-daemon --stacktrace :core:test :ios:compileKotlin
+        run: ./gradlew --no-daemon --no-configuration-cache --stacktrace :core:test :ios:compileKotlin
 
       - name: Import signing assets
         if: ${{ env.IOS_DISTRIBUTION_CERTIFICATE_BASE64 != '' && env.IOS_PROVISIONING_PROFILE_BASE64 != '' }}
@@ -71,7 +71,7 @@ jobs:
 
       - name: Build signed IPA
         if: ${{ env.IOS_SKIP_SIGNING == 'false' }}
-        run: ./gradlew --no-daemon --stacktrace :ios:createIPA
+        run: ./gradlew --no-daemon --no-configuration-cache --stacktrace :ios:createIPA
 
       - name: Upload IPA artifact
         if: ${{ env.IOS_SKIP_SIGNING == 'false' }}
