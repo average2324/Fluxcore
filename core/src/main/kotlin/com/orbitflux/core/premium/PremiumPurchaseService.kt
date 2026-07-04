@@ -45,7 +45,7 @@ object UnavailablePremiumPurchaseService : PremiumPurchaseService {
 class SimulatedPremiumPurchaseService(
     private val productId: String = "fluxcore_premium",
     private val title: String = "FluxCore Premium",
-    private val description: String = "One-time unlock for ad-free unlimited lives.",
+    private val description: String = "One-time premium unlock with unlimited lives.",
     private val priceLabel: String = "$4.99"
 ) : PremiumPurchaseService {
     private var owned = false

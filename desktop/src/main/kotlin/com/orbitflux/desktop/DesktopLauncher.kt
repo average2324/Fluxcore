@@ -3,6 +3,7 @@ package com.orbitflux.desktop
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.badlogic.gdx.graphics.glutils.HdpiMode
+import com.orbitflux.core.CommercePlatform
 import com.orbitflux.core.GameDependencies
 import com.orbitflux.core.HexagonGame
 import com.orbitflux.core.ads.SimulatedInterstitialAdService
@@ -16,6 +17,7 @@ fun main(args: Array<String>) {
         ?.substringAfter("=")
         ?.toFloatOrNull()
     val simulationMode = args.any { it == "--simulate" || it == "--sim" }
+    val appStorePreview = args.any { it == "--app-store-preview" || it == "--ios-preview" }
     val simulationLevelIndex = args
         .firstOrNull { it.startsWith("--sim-level=") }
         ?.substringAfter("=")
@@ -31,6 +33,10 @@ fun main(args: Array<String>) {
         ?.substringAfter("=")
         ?.toIntOrNull()
         ?: 1280
+    val premiumPrice = args
+        .firstOrNull { it.startsWith("--premium-price=") }
+        ?.substringAfter("=")
+        ?: if (appStorePreview) "79,99" else "$4.99"
 
     val config = Lwjgl3ApplicationConfiguration().apply {
         setTitle("FluxCore")
@@ -49,7 +55,12 @@ fun main(args: Array<String>) {
                 rewardedLifeService = SimulatedRewardedLifeService(),
                 interstitialAdService = SimulatedInterstitialAdService(),
                 bannerAdService = UnavailableBannerAdService,
-                premiumPurchaseService = SimulatedPremiumPurchaseService(),
+                premiumPurchaseService = SimulatedPremiumPurchaseService(
+                    description = "One-time premium unlock with unlimited lives.",
+                    priceLabel = premiumPrice
+                ),
+                commercePlatform = if (appStorePreview) CommercePlatform.APP_STORE else CommercePlatform.GENERIC,
+                adsEnabled = !appStorePreview,
                 simulationModeEnabled = simulationMode,
                 simulationStartLevel = simulationLevelIndex
             )

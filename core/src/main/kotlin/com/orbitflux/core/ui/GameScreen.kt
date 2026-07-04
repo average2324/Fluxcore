@@ -4853,10 +4853,17 @@ class GameScreen(
         val pageTitle = t("FLUXCORE PREMIUM", "FLUXCORE PREMIUM")
         titleFont.draw(batch, pageTitle, centeredX(pageTitle, titleFont, panel), panel.y + panel.height - sy(54f))
         font.color = chromeMuted
-        val subtitle = t(
-            "One-time unlock. No subscription. Clean, ad-light survival flow with unlimited lives.",
-            "Tek seferlik kilit açma. Abonelik yok. Reklamsız, temiz akış ve sınırsız can."
-        )
+        val subtitle = if (adsEnabled()) {
+            t(
+                "One-time unlock. No subscription. Removes ads and unlocks unlimited lives.",
+                "Tek seferlik kilit açma. Abonelik yok. Reklamları kaldırır ve sınırsız can açar."
+            )
+        } else {
+            t(
+                "One-time unlock. No subscription. Premium survival flow with unlimited lives.",
+                "Tek seferlik kilit açma. Abonelik yok. Sınırsız canlı premium hayatta kalma akışı."
+            )
+        }
         val subtitleLines = wrappedLines(subtitle, panel.width - sx(84f)).take(2)
         var subtitleY = panel.y + panel.height - sy(118f)
         for (line in subtitleLines) {
@@ -4869,10 +4876,17 @@ class GameScreen(
         val heroTitle = t("Permanent Upgrade", "Kalıcı Yükseltme")
         uiTitleFont.draw(batch, heroTitle, heroRect.x + sx(34f), heroRect.y + heroRect.height - sy(40f))
         bodyFont.color = chromeMuted
-        val heroCopy = t(
-            "Removes banner ads and unlocks unlimited lives with a verified one-time purchase.",
-            "Banner reklamları kaldırır ve doğrulanmış tek seferlik satın alımla sınırsız can verir."
-        )
+        val heroCopy = if (adsEnabled()) {
+            t(
+                "Removes banner ads and unlocks unlimited lives with a verified one-time purchase.",
+                "Banner reklamları kaldırır ve doğrulanmış tek seferlik satın alımla sınırsız can verir."
+            )
+        } else {
+            t(
+                "Unlocks unlimited lives with a verified one-time App Store purchase.",
+                "Doğrulanmış tek seferlik App Store satın alımıyla sınırsız can verir."
+            )
+        }
         val heroLines = wrappedLines(heroCopy, heroRect.width * 0.56f).take(3)
         var heroTextY = heroRect.y + heroRect.height - sy(96f)
         for (line in heroLines) {
@@ -4888,13 +4902,26 @@ class GameScreen(
         uiTitleFont.draw(batch, fittedPrice, heroRect.x + sx(34f), heroRect.y + sy(64f))
         batch.end()
 
-        drawPremiumBenefitCard(
-            rect = premiumBenefitRect(0),
-            title = t("Ad-Free Navigation", "Reklamsız Akış"),
-            description = t(
+        val firstBenefitTitle = if (adsEnabled()) {
+            t("Ad-Free Navigation", "Reklamsız Akış")
+        } else {
+            t("Clean Premium Flow", "Temiz Premium Akış")
+        }
+        val firstBenefitDescription = if (adsEnabled()) {
+            t(
                 "Banner ads stay off while navigating intro, menu and premium screens.",
                 "Intro, menü ve premium ekranlarında banner reklamlar kapalı kalır."
-            ),
+            )
+        } else {
+            t(
+                "Premium screens stay focused across intro, menu and upgrade screens.",
+                "Intro, menü ve yükseltme ekranlarında premium akış odaklı kalır."
+            )
+        }
+        drawPremiumBenefitCard(
+            rect = premiumBenefitRect(0),
+            title = firstBenefitTitle,
+            description = firstBenefitDescription,
             accent = Color(0.56f, 0.94f, 1f, 1f)
         )
         drawPremiumBenefitCard(
