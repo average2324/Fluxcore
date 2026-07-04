@@ -6,7 +6,7 @@ on:
       upload_testflight:
         description: "Upload the signed IPA to TestFlight"
         required: true
-        default: "false"
+        default: "true"
         type: choice
         options:
           - "false"
@@ -41,6 +41,14 @@ jobs:
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
+
+      - name: Show release mode
+        run: |
+          echo "upload_testflight=${{ inputs.upload_testflight }}"
+          echo "IOS_SKIP_SIGNING=${IOS_SKIP_SIGNING:-unset}"
+          echo "### iOS release mode" >> "$GITHUB_STEP_SUMMARY"
+          echo "- upload_testflight: ${{ inputs.upload_testflight }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- IOS_SKIP_SIGNING: ${IOS_SKIP_SIGNING:-unset}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify shared code and iOS launcher
         run: ./gradlew --no-daemon --no-configuration-cache --stacktrace :core:test :ios:compileKotlin
@@ -87,6 +95,18 @@ jobs:
         run: |
           set -euo pipefail
           IPA_PATH="$(find ios/build/robovm -name '*.ipa' -print -quit)"
+          if [ -z "$IPA_PATH" ]; then
+            echo "No IPA file found under ios/build/robovm." >&2
+            exit 1
+          fi
+          if [ -z "${APP_STORE_CONNECT_KEY_ID:-}" ] || [ -z "${APP_STORE_CONNECT_ISSUER_ID:-}" ]; then
+            echo "App Store Connect API key id or issuer id secret is missing." >&2
+            exit 1
+          fi
+          if [ -z "${APP_STORE_CONNECT_API_KEY_P8_BASE64:-}" ] && [ -z "${APP_STORE_CONNECT_API_KEY_P8:-}" ]; then
+            echo "App Store Connect API key secret is missing." >&2
+            exit 1
+          fi
           mkdir -p "$HOME/.appstoreconnect/private_keys"
           KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
           if [ -n "${APP_STORE_CONNECT_API_KEY_P8_BASE64:-}" ]; then
@@ -99,6 +119,7 @@ jobs:
             --file "$IPA_PATH" \
             --apiKey "$APP_STORE_CONNECT_KEY_ID" \
             --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
+          echo "Uploaded $IPA_PATH to App Store Connect. Processing can take several minutes." >> "$GITHUB_STEP_SUMMARY"
         env:
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
