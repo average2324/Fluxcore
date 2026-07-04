@@ -12,21 +12,23 @@ class IosLauncher : IOSApplication.Delegate() {
     private val premiumPurchaseService = IosPremiumPurchaseService()
 
     override fun createApplication(): IOSApplication {
-        val config = IOSApplicationConfiguration().apply {
-            orientationPortrait = true
-            orientationLandscape = false
-            useAccelerometer = false
-            useCompass = false
-        }
+        val config =
+            IOSApplicationConfiguration().apply {
+                orientationPortrait = true
+                orientationLandscape = false
+                useAccelerometer = false
+                useCompass = false
+            }
         return IOSApplication(
             HexagonGame(
-                dependencies = GameDependencies(
-                    premiumPurchaseService = premiumPurchaseService,
-                    commercePlatform = CommercePlatform.APP_STORE,
-                    adsEnabled = false
-                )
+                dependencies =
+                    GameDependencies(
+                        premiumPurchaseService = premiumPurchaseService,
+                        commercePlatform = CommercePlatform.APP_STORE,
+                        adsEnabled = false,
+                    ),
             ),
-            config
+            config,
         )
     }
 
