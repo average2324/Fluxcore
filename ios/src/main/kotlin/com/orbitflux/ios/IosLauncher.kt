@@ -31,11 +31,6 @@ class IosLauncher : IOSApplication.Delegate() {
             config,
         )
     }
-
-    override fun didBecomeActive(application: UIApplication) {
-        super.didBecomeActive(application)
-        premiumPurchaseService.refreshCachedOwnership()
-    }
 }
 
 fun main(args: Array<String>) {

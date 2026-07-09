@@ -441,6 +441,7 @@ class GameScreen(
     private var premiumDialogSecondaryLabel = ""
     private var premiumDialogTone = ChipTone.NEUTRAL
     private var premiumDialogRetryOnPrimary = false
+    private var premiumProcessingSeconds = 0f
     private var levelClearCount = profilePreferences.getInteger(STORE_LEVEL_CLEAR_COUNT_KEY, 0)
     private var shieldCount = profilePreferences.getInteger(STORE_SHIELD_COUNT_KEY, MAX_SHIELDS).coerceIn(0, MAX_SHIELDS)
     private var slowPowerCount = profilePreferences.getInteger(STORE_SLOW_POWER_COUNT_KEY, MAX_SLOW_POWERS).coerceIn(0, MAX_SLOW_POWERS)
@@ -718,6 +719,28 @@ class GameScreen(
     }
 
     private fun updateOverlayFlow(delta: Float) {
+        // The PROCESSING dialog blocks all touch input; without this watchdog a missing
+        // StoreKit callback (network stall, deferred approval) locks the app permanently.
+        if (premiumDialogType == PremiumDialogType.PROCESSING) {
+            premiumProcessingSeconds += delta
+            if (premiumProcessingSeconds >= 45f) {
+                showPremiumDialog(
+                    type = PremiumDialogType.FAILURE,
+                    title = t("STORE NOT RESPONDING", "MAĞAZA YANIT VERMİYOR"),
+                    body = t(
+                        "The App Store has not responded yet. If the purchase completes later, premium unlocks automatically.",
+                        "App Store henüz yanıt vermedi. Satın alma daha sonra tamamlanırsa premium otomatik olarak açılır."
+                    ),
+                    primaryLabel = t("TRY AGAIN", "TEKRAR DENE"),
+                    secondaryLabel = t("CLOSE", "KAPAT"),
+                    tone = ChipTone.ALERT,
+                    retryOnPrimary = true
+                )
+            }
+        } else {
+            premiumProcessingSeconds = 0f
+        }
+
         when (overlayMode) {
             OverlayMode.SPLASH -> {
                 splashRemainingSeconds = (splashRemainingSeconds - delta).coerceAtLeast(0f)
@@ -1765,6 +1788,15 @@ class GameScreen(
         return reward
     }
 
+    private fun requestRewardedAd(onResult: (RewardedLifeResult) -> Unit) {
+        // Guarantee the callback fires so adActionInProgress can never stay true forever.
+        try {
+            dependencies.rewardedLifeService.requestLifeReward(onResult)
+        } catch (throwable: Throwable) {
+            onResult(RewardedLifeResult.Failed(throwable.message ?: "Rewarded ad unavailable"))
+        }
+    }
+
     private fun canUseCoinDoubleAd(): Boolean {
         if (!adsEnabled() || adActionInProgress || simulationControlEnabled || premiumEnabled) {
             return false
@@ -1785,7 +1817,7 @@ class GameScreen(
         }
         adActionInProgress = true
         statusMessage = t("WATCHING AD...", "REKLAM İZLENİYOR...")
-        dependencies.rewardedLifeService.requestLifeReward { result ->
+        requestRewardedAd { result ->
             Gdx.app.postRunnable {
                 adActionInProgress = false
                 when (result) {
@@ -1993,7 +2025,7 @@ class GameScreen(
         }
         adActionInProgress = true
         statusMessage = t("LOADING REWARD AD...", "ÖDÜLLÜ REKLAM YÜKLENİYOR...")
-        dependencies.rewardedLifeService.requestLifeReward { result ->
+        requestRewardedAd { result ->
             Gdx.app.postRunnable {
                 adActionInProgress = false
                 when (result) {
@@ -2026,7 +2058,7 @@ class GameScreen(
         }
         adActionInProgress = true
         statusMessage = t("LOADING REWARD AD...", "ÖDÜLLÜ REKLAM YÜKLENİYOR...")
-        dependencies.rewardedLifeService.requestLifeReward { result ->
+        requestRewardedAd { result ->
             Gdx.app.postRunnable {
                 adActionInProgress = false
                 when (result) {
@@ -2055,7 +2087,7 @@ class GameScreen(
         }
         adActionInProgress = true
         statusMessage = t("LOADING REWARD AD...", "ÖDÜLLÜ REKLAM YÜKLENİYOR...")
-        dependencies.rewardedLifeService.requestLifeReward { result ->
+        requestRewardedAd { result ->
             Gdx.app.postRunnable {
                 adActionInProgress = false
                 when (result) {
@@ -2083,7 +2115,7 @@ class GameScreen(
         }
         adActionInProgress = true
         statusMessage = t("LOADING REWARD AD...", "ÖDÜLLÜ REKLAM YÜKLENİYOR...")
-        dependencies.rewardedLifeService.requestLifeReward { result ->
+        requestRewardedAd { result ->
             Gdx.app.postRunnable {
                 adActionInProgress = false
                 when (result) {

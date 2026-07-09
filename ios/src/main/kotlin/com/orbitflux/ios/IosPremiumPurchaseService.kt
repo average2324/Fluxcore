@@ -45,7 +45,13 @@ class IosPremiumPurchaseService(
             }
 
             override fun restoreCompletedTransactionsFinished(queue: SKPaymentQueue) {
-                activePurchaseCallback?.invoke(PremiumPurchaseResult.Success(cachedProduct))
+                activePurchaseCallback?.invoke(
+                    if (cachedOwned) {
+                        PremiumPurchaseResult.Success(cachedProduct)
+                    } else {
+                        PremiumPurchaseResult.Failed("No previous purchase found to restore")
+                    },
+                )
                 activePurchaseCallback = null
                 activeRestoreCallback?.invoke(
                     currentStatus(
@@ -125,10 +131,6 @@ class IosPremiumPurchaseService(
         queue.restoreCompletedTransactions()
     }
 
-    fun refreshCachedOwnership() {
-        queue.restoreCompletedTransactions()
-    }
-
     private fun currentStatus(
         isLoading: Boolean = false,
         message: String? = null,
@@ -205,9 +207,17 @@ class IosPremiumPurchaseService(
                 activePurchaseCallback = null
             }
 
-            SKPaymentTransactionState.Deferred,
-            SKPaymentTransactionState.Purchasing,
-            -> Unit
+            SKPaymentTransactionState.Deferred -> {
+                // Ask to Buy: no further callback may arrive, so release the UI now.
+                activePurchaseCallback?.invoke(
+                    PremiumPurchaseResult.Failed(
+                        "Purchase is awaiting approval. Premium unlocks automatically once approved.",
+                    ),
+                )
+                activePurchaseCallback = null
+            }
+
+            SKPaymentTransactionState.Purchasing -> Unit
         }
     }
 
