@@ -1,6 +1,20 @@
 name: iOS Build
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/ios-release.yml"
+      - "assets/**"
+      - "core/**"
+      - "ios/**"
+      - "gradle/**"
+      - "build.gradle.kts"
+      - "gradle.properties"
+      - "gradlew"
+      - "gradlew.bat"
+      - "settings.gradle.kts"
   workflow_dispatch:
     inputs:
       upload_testflight:
@@ -44,10 +58,12 @@ jobs:
 
       - name: Show release mode
         run: |
-          echo "upload_testflight=${{ inputs.upload_testflight }}"
+          echo "event_name=${{ github.event_name }}"
+          echo "upload_testflight=${{ inputs.upload_testflight || 'push' }}"
           echo "IOS_SKIP_SIGNING=${IOS_SKIP_SIGNING:-unset}"
           echo "### iOS release mode" >> "$GITHUB_STEP_SUMMARY"
-          echo "- upload_testflight: ${{ inputs.upload_testflight }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- event_name: ${{ github.event_name }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- upload_testflight: ${{ inputs.upload_testflight || 'push' }}" >> "$GITHUB_STEP_SUMMARY"
           echo "- IOS_SKIP_SIGNING: ${IOS_SKIP_SIGNING:-unset}" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Verify shared code and iOS launcher
@@ -90,7 +106,7 @@ jobs:
           path: ios/build/robovm/**/*.ipa
 
       - name: Upload to TestFlight
-        if: ${{ inputs.upload_testflight == 'true' && env.IOS_SKIP_SIGNING == 'false' }}
+        if: ${{ (github.event_name == 'push' || inputs.upload_testflight == 'true') && env.IOS_SKIP_SIGNING == 'false' }}
         shell: bash
         run: |
           set -euo pipefail
