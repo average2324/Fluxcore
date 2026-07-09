@@ -1,4 +1,4 @@
-package com.orbitflux.core.profile
+package com.luminadigitale.fluxcore.core.profile
 
 import com.badlogic.gdx.Preferences
 

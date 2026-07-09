@@ -1,4 +1,4 @@
-package com.orbitflux.core.engine
+package com.luminadigitale.fluxcore.core.engine
 
 class SeededRng(seed: Long) {
     private var state: Long = if (seed != 0L) seed else 0x9E3779B97F4A7C15UL.toLong()

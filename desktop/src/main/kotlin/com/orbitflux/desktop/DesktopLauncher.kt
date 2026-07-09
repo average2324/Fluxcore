@@ -1,15 +1,15 @@
-package com.orbitflux.desktop
+package com.luminadigitale.fluxcore.desktop
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.badlogic.gdx.graphics.glutils.HdpiMode
-import com.orbitflux.core.CommercePlatform
-import com.orbitflux.core.GameDependencies
-import com.orbitflux.core.HexagonGame
-import com.orbitflux.core.ads.SimulatedInterstitialAdService
-import com.orbitflux.core.ads.SimulatedRewardedLifeService
-import com.orbitflux.core.ads.UnavailableBannerAdService
-import com.orbitflux.core.premium.SimulatedPremiumPurchaseService
+import com.luminadigitale.fluxcore.core.CommercePlatform
+import com.luminadigitale.fluxcore.core.GameDependencies
+import com.luminadigitale.fluxcore.core.HexagonGame
+import com.luminadigitale.fluxcore.core.ads.SimulatedInterstitialAdService
+import com.luminadigitale.fluxcore.core.ads.SimulatedRewardedLifeService
+import com.luminadigitale.fluxcore.core.ads.UnavailableBannerAdService
+import com.luminadigitale.fluxcore.core.premium.SimulatedPremiumPurchaseService
 
 fun main(args: Array<String>) {
     val smokeSeconds = args

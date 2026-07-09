@@ -1,4 +1,4 @@
-package com.orbitflux.android
+package com.luminadigitale.fluxcore.android
 
 import android.app.Activity
 import com.google.android.ump.ConsentDebugSettings

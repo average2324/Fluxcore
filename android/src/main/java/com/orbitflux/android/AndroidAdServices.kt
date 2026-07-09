@@ -1,4 +1,4 @@
-package com.orbitflux.android
+package com.luminadigitale.fluxcore.android
 
 import android.app.Activity
 import android.os.Handler
@@ -14,10 +14,10 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.orbitflux.core.ads.BannerAdService
-import com.orbitflux.core.ads.InterstitialAdService
-import com.orbitflux.core.ads.RewardedLifeResult
-import com.orbitflux.core.ads.RewardedLifeService
+import com.luminadigitale.fluxcore.core.ads.BannerAdService
+import com.luminadigitale.fluxcore.core.ads.InterstitialAdService
+import com.luminadigitale.fluxcore.core.ads.RewardedLifeResult
+import com.luminadigitale.fluxcore.core.ads.RewardedLifeService
 
 class AndroidAdServices(
     private val activity: Activity

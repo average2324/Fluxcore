@@ -1,5 +1,5 @@
 # Keep app/game classes stable to avoid runtime reflection issues in engine/ad integrations.
--keep class com.orbitflux.** { *; }
+-keep class com.luminadigitale.fluxcore.** { *; }
 
 # Keep libGDX Android bootstrap/runtime classes used by backend/native loaders.
 -keep class com.badlogic.gdx.backends.android.** { *; }

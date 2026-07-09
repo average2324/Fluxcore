@@ -1,4 +1,4 @@
-package com.orbitflux.core.math
+package com.luminadigitale.fluxcore.core.math
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

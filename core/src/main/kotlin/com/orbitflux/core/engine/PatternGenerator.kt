@@ -1,4 +1,4 @@
-package com.orbitflux.core.engine
+package com.luminadigitale.fluxcore.core.engine
 
 import com.badlogic.gdx.math.MathUtils
 
@@ -182,7 +182,9 @@ class PatternGenerator(
             "gravity_pull" -> (template.gapOverride ?: levelConfig.gapSectorCount) + 2
             "time_bubble" -> (template.gapOverride ?: levelConfig.gapSectorCount) + 2
             "missile_volley" -> (template.gapOverride ?: levelConfig.gapSectorCount) + 1
+            "flux_mirror" -> (template.gapOverride ?: levelConfig.gapSectorCount) + 1
             "dense_blades", "needle_window", "final_crush" -> 2
+            "core_surge" -> 2
             else -> template.gapOverride ?: levelConfig.gapSectorCount
         }
         val safeGapSectorCount = minimumSafeGapSectors(sectorCount)
@@ -222,10 +224,11 @@ class PatternGenerator(
             "time_bubble" -> 0
             "narrow_gate", "needle_window" -> direction
             "gravity_pull" -> 0
+            "flux_mirror" -> -direction * maxOf(1, safeLaneShift)
             "missile_volley" -> direction * maxOf(1, safeLaneShift)
             "tight_teeth", "split_lane" -> direction * safeLaneShift
             "drift_gap" -> direction
-            "dense_blades", "final_crush" -> direction * safeLaneShift
+            "dense_blades", "core_surge", "final_crush" -> direction * safeLaneShift
             else -> 0
         }
     }
@@ -236,8 +239,9 @@ class PatternGenerator(
             "pulse_ring" -> 0.92f
             "gravity_pull" -> 1.24f
             "time_bubble" -> 1.28f
+            "flux_mirror" -> 0.96f
             "missile_volley" -> 0.9f
-            "dense_blades", "tight_teeth" -> 0.84f
+            "core_surge", "dense_blades", "tight_teeth" -> 0.84f
             "needle_window" -> 0.9f
             "final_crush" -> 0.74f
             else -> 1f
@@ -286,8 +290,10 @@ class PatternGenerator(
             "pulse_ring" -> rng.nextFloat(14f, (26f + levelProgress * 18f) * blockSpinBoost)
             "gravity_pull" -> rng.nextFloat(4f, (9f + levelProgress * 6f) * blockSpinBoost)
             "time_bubble" -> rng.nextFloat(3f, (8f + levelProgress * 5f) * blockSpinBoost)
+            "flux_mirror" -> rng.nextFloat(8f, (20f + levelProgress * 14f) * blockSpinBoost)
             "missile_volley" -> rng.nextFloat(16f, (28f + levelProgress * 18f) * blockSpinBoost)
             "split_lane" -> rng.nextFloat(12f, (22f + levelProgress * 16f) * blockSpinBoost)
+            "core_surge" -> rng.nextFloat(18f, (34f + levelProgress * 22f) * blockSpinBoost)
             "final_crush" -> rng.nextFloat(18f, (32f + levelProgress * 18f) * blockSpinBoost)
             else -> if (levelConfig.index > 10) {
                 rng.nextFloat(5f, (11f + levelProgress * 9f) * blockSpinBoost)
@@ -427,6 +433,7 @@ class PatternGenerator(
         }
         val warBoost = when (template.id) {
             "missile_volley" -> if (levelConfig.index in 61..70) 2.05f else 0.01f
+            "core_surge" -> if (levelConfig.index in 41..60) 1.32f else 0.95f
             "final_crush" -> if (levelConfig.index in 61..70) 0.52f else 1f
             "dense_blades" -> if (levelConfig.index in 61..70) 0.74f else 1f
             "split_lane" -> if (levelConfig.index in 61..70) 0.82f else 1f
@@ -434,8 +441,8 @@ class PatternGenerator(
         }
         val earlyEase = when (template.id) {
             "clean_arc", "narrow_gate", "wide_ring", "drift_gap" -> if (levelConfig.index <= 5) 1.6f else 1f
-            "tight_teeth", "dense_blades", "final_crush", "split_lane" -> if (levelConfig.index <= 5) 0.28f else 1f
-            "pulse_ring", "gravity_pull", "needle_window" -> if (levelConfig.index <= 5) 0.55f else 1f
+            "tight_teeth", "dense_blades", "core_surge", "final_crush", "split_lane" -> if (levelConfig.index <= 5) 0.28f else 1f
+            "pulse_ring", "gravity_pull", "needle_window", "flux_mirror" -> if (levelConfig.index <= 5) 0.55f else 1f
             else -> 1f
         }
         val repeatPenalty = if (template.id == previousTemplateId) 0.42f else 1f
@@ -459,7 +466,9 @@ class PatternGenerator(
             "time_bubble" -> levelConfig.index in 31..40
             "final_crush" -> levelConfig.index >= 41
             "missile_volley" -> levelConfig.index in 61..70
+            "core_surge" -> levelConfig.index >= 41
             "dense_blades" -> levelConfig.index >= 21
+            "flux_mirror" -> levelConfig.index >= 11
             "split_lane" -> levelConfig.index >= 16
             "needle_window" -> levelConfig.index >= 11
             "tight_teeth" -> levelConfig.index >= 8

@@ -1,4 +1,4 @@
-package com.orbitflux.core.ui
+package com.luminadigitale.fluxcore.core.ui
 
 import com.badlogic.gdx.graphics.Color
 

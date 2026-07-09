@@ -1,4 +1,4 @@
-package com.orbitflux.core.engine
+package com.luminadigitale.fluxcore.core.engine
 
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -43,5 +43,27 @@ class LevelPatternVarietyTest {
                 "expected >=2 unique signatures in levels ${windowStart + 1}-${windowStart + 5}, found $uniqueInWindow"
             )
         }
+    }
+
+    @Test
+    fun fluxCoreSignaturePatterns_unlockAfterOpeningBlock() {
+        val levels = LevelCatalog.create(60)
+
+        val levelTwentyFourPatterns = generatedPatternIds(levels[23])
+        val levelFortyOnePatterns = generatedPatternIds(levels[40])
+
+        assertTrue("flux_mirror" in levelTwentyFourPatterns, "level 24 patterns=$levelTwentyFourPatterns")
+        assertTrue("core_surge" in levelFortyOnePatterns, "level 41 patterns=$levelFortyOnePatterns")
+    }
+
+    private fun generatedPatternIds(level: LevelConfig): Set<String> {
+        val ids = mutableSetOf<String>()
+        for (seed in 1L..80L) {
+            val generator = PatternGenerator(level, 700000L + seed)
+            repeat(8) {
+                ids += generator.nextSpawn(1.2f, 1.08f).obstacle.patternId
+            }
+        }
+        return ids
     }
 }

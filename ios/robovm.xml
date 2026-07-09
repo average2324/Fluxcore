@@ -1,5 +1,5 @@
 <config>
-    <mainClass>com.orbitflux.ios.IosLauncherKt</mainClass>
+    <mainClass>com.luminadigitale.fluxcore.ios.IosLauncherKt</mainClass>
     <executableName>FluxCore</executableName>
     <os>ios</os>
     <target>ios</target>

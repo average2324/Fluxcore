@@ -64,7 +64,7 @@ val premiumProductId = envNonBlank("ORBITFLUX_PREMIUM_PRODUCT_ID")
 val simulationStartLevel = (envNonBlank("ORBITFLUX_SIMULATION_START_LEVEL")?.toIntOrNull() ?: 1) - 1
 
 android {
-    namespace = "com.orbitflux.android"
+    namespace = "com.luminadigitale.fluxcore.android"
     compileSdk = 35
 
     defaultConfig {

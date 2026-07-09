@@ -1,4 +1,4 @@
-package com.orbitflux.core.lives
+package com.luminadigitale.fluxcore.core.lives
 
 fun interface EpochSecondsProvider {
     fun nowEpochSeconds(): Long

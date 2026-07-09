@@ -1,4 +1,4 @@
-package com.orbitflux.core.premium
+package com.luminadigitale.fluxcore.core.premium
 
 data class PremiumProduct(
     val productId: String,

@@ -1,4 +1,4 @@
-package com.orbitflux.android
+package com.luminadigitale.fluxcore.android
 
 import android.app.Activity
 import android.os.Handler
@@ -14,10 +14,10 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
-import com.orbitflux.core.premium.PremiumProduct
-import com.orbitflux.core.premium.PremiumPurchaseResult
-import com.orbitflux.core.premium.PremiumPurchaseService
-import com.orbitflux.core.premium.PremiumStatus
+import com.luminadigitale.fluxcore.core.premium.PremiumProduct
+import com.luminadigitale.fluxcore.core.premium.PremiumPurchaseResult
+import com.luminadigitale.fluxcore.core.premium.PremiumPurchaseService
+import com.luminadigitale.fluxcore.core.premium.PremiumStatus
 
 class AndroidPremiumPurchaseService(
     private val activity: Activity

@@ -1,4 +1,4 @@
-package com.orbitflux.core.ads
+package com.luminadigitale.fluxcore.core.ads
 
 sealed class RewardedLifeResult {
     data object Granted : RewardedLifeResult()

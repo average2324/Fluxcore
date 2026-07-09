@@ -20,7 +20,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.orbitflux.desktop.DesktopLauncherKt")
+    mainClass.set("com.luminadigitale.fluxcore.desktop.DesktopLauncherKt")
 }
 
 tasks.withType<JavaExec>().configureEach {

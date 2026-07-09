@@ -1,4 +1,4 @@
-package com.orbitflux.android
+package com.luminadigitale.fluxcore.android
 
 import android.app.ActivityManager
 import android.os.Build
@@ -10,9 +10,9 @@ import android.widget.FrameLayout
 import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.google.android.gms.ads.MobileAds
-import com.orbitflux.core.CommercePlatform
-import com.orbitflux.core.GameDependencies
-import com.orbitflux.core.HexagonGame
+import com.luminadigitale.fluxcore.core.CommercePlatform
+import com.luminadigitale.fluxcore.core.GameDependencies
+import com.luminadigitale.fluxcore.core.HexagonGame
 
 class AndroidLauncher : AndroidApplication() {
     private lateinit var adServices: AndroidAdServices

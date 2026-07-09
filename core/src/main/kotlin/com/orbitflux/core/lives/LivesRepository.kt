@@ -1,4 +1,4 @@
-package com.orbitflux.core.lives
+package com.luminadigitale.fluxcore.core.lives
 
 import com.badlogic.gdx.Preferences
 

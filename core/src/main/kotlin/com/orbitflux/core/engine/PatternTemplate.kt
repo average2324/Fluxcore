@@ -1,4 +1,4 @@
-package com.orbitflux.core.engine
+package com.luminadigitale.fluxcore.core.engine
 
 enum class PatternFamily {
     SINGLE_THREAT,

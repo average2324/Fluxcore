@@ -1,10 +1,10 @@
-package com.orbitflux.ios
+package com.luminadigitale.fluxcore.ios
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration
-import com.orbitflux.core.CommercePlatform
-import com.orbitflux.core.GameDependencies
-import com.orbitflux.core.HexagonGame
+import com.luminadigitale.fluxcore.core.CommercePlatform
+import com.luminadigitale.fluxcore.core.GameDependencies
+import com.luminadigitale.fluxcore.core.HexagonGame
 import org.robovm.apple.foundation.NSAutoreleasePool
 import org.robovm.apple.uikit.UIApplication
 

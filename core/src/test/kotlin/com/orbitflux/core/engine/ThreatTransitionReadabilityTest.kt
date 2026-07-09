@@ -1,4 +1,4 @@
-package com.orbitflux.core.engine
+package com.luminadigitale.fluxcore.core.engine
 
 import com.badlogic.gdx.math.MathUtils
 import kotlin.math.abs

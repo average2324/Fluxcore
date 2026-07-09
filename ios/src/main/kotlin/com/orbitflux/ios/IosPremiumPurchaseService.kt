@@ -1,9 +1,9 @@
-package com.orbitflux.ios
+package com.luminadigitale.fluxcore.ios
 
-import com.orbitflux.core.premium.PremiumProduct
-import com.orbitflux.core.premium.PremiumPurchaseResult
-import com.orbitflux.core.premium.PremiumPurchaseService
-import com.orbitflux.core.premium.PremiumStatus
+import com.luminadigitale.fluxcore.core.premium.PremiumProduct
+import com.luminadigitale.fluxcore.core.premium.PremiumPurchaseResult
+import com.luminadigitale.fluxcore.core.premium.PremiumPurchaseService
+import com.luminadigitale.fluxcore.core.premium.PremiumStatus
 import org.robovm.apple.foundation.NSArray
 import org.robovm.apple.foundation.NSError
 import org.robovm.apple.foundation.NSNumberFormatter

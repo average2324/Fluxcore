@@ -1,15 +1,15 @@
-package com.orbitflux.core
+package com.luminadigitale.fluxcore.core
 
-import com.orbitflux.core.ads.RewardedLifeService
-import com.orbitflux.core.ads.InterstitialAdService
-import com.orbitflux.core.ads.BannerAdService
-import com.orbitflux.core.ads.UnavailableBannerAdService
-import com.orbitflux.core.ads.UnavailableInterstitialAdService
-import com.orbitflux.core.ads.UnavailableRewardedLifeService
-import com.orbitflux.core.lives.EpochSecondsProvider
-import com.orbitflux.core.lives.SystemEpochSecondsProvider
-import com.orbitflux.core.premium.PremiumPurchaseService
-import com.orbitflux.core.premium.UnavailablePremiumPurchaseService
+import com.luminadigitale.fluxcore.core.ads.RewardedLifeService
+import com.luminadigitale.fluxcore.core.ads.InterstitialAdService
+import com.luminadigitale.fluxcore.core.ads.BannerAdService
+import com.luminadigitale.fluxcore.core.ads.UnavailableBannerAdService
+import com.luminadigitale.fluxcore.core.ads.UnavailableInterstitialAdService
+import com.luminadigitale.fluxcore.core.ads.UnavailableRewardedLifeService
+import com.luminadigitale.fluxcore.core.lives.EpochSecondsProvider
+import com.luminadigitale.fluxcore.core.lives.SystemEpochSecondsProvider
+import com.luminadigitale.fluxcore.core.premium.PremiumPurchaseService
+import com.luminadigitale.fluxcore.core.premium.UnavailablePremiumPurchaseService
 
 enum class CommercePlatform {
     GENERIC,

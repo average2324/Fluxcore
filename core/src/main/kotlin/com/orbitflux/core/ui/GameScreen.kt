@@ -1,4 +1,4 @@
-﻿package com.orbitflux.core.ui
+package com.luminadigitale.fluxcore.core.ui
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
@@ -21,29 +21,29 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.utils.Align
 import com.badlogic.gdx.utils.viewport.ExtendViewport
-import com.orbitflux.core.CommercePlatform
-import com.orbitflux.core.GameDependencies
-import com.orbitflux.core.engine.CollisionEngine
-import com.orbitflux.core.engine.GameSimulation
-import com.orbitflux.core.engine.LevelCatalog
-import com.orbitflux.core.engine.LevelConfig
-import com.orbitflux.core.engine.Obstacle
-import com.orbitflux.core.engine.RunPhase
-import com.orbitflux.core.math.AngleMath
-import com.orbitflux.core.ads.RewardedLifeResult
-import com.orbitflux.core.lives.LivesManager
-import com.orbitflux.core.lives.LivesState
-import com.orbitflux.core.lives.PreferencesLivesRepository
-import com.orbitflux.core.premium.PremiumProduct
-import com.orbitflux.core.premium.PremiumPurchaseResult
-import com.orbitflux.core.premium.PremiumStatus
-import com.orbitflux.core.profile.AppLanguage
-import com.orbitflux.core.profile.BestScoreManager
-import com.orbitflux.core.profile.GameDifficulty
-import com.orbitflux.core.profile.PreferencesBestScoreRepository
-import com.orbitflux.core.profile.PreferencesSettingsRepository
-import com.orbitflux.core.profile.SettingsManager
-import com.orbitflux.core.profile.SettingsState
+import com.luminadigitale.fluxcore.core.CommercePlatform
+import com.luminadigitale.fluxcore.core.GameDependencies
+import com.luminadigitale.fluxcore.core.engine.CollisionEngine
+import com.luminadigitale.fluxcore.core.engine.GameSimulation
+import com.luminadigitale.fluxcore.core.engine.LevelCatalog
+import com.luminadigitale.fluxcore.core.engine.LevelConfig
+import com.luminadigitale.fluxcore.core.engine.Obstacle
+import com.luminadigitale.fluxcore.core.engine.RunPhase
+import com.luminadigitale.fluxcore.core.math.AngleMath
+import com.luminadigitale.fluxcore.core.ads.RewardedLifeResult
+import com.luminadigitale.fluxcore.core.lives.LivesManager
+import com.luminadigitale.fluxcore.core.lives.LivesState
+import com.luminadigitale.fluxcore.core.lives.PreferencesLivesRepository
+import com.luminadigitale.fluxcore.core.premium.PremiumProduct
+import com.luminadigitale.fluxcore.core.premium.PremiumPurchaseResult
+import com.luminadigitale.fluxcore.core.premium.PremiumStatus
+import com.luminadigitale.fluxcore.core.profile.AppLanguage
+import com.luminadigitale.fluxcore.core.profile.BestScoreManager
+import com.luminadigitale.fluxcore.core.profile.GameDifficulty
+import com.luminadigitale.fluxcore.core.profile.PreferencesBestScoreRepository
+import com.luminadigitale.fluxcore.core.profile.PreferencesSettingsRepository
+import com.luminadigitale.fluxcore.core.profile.SettingsManager
+import com.luminadigitale.fluxcore.core.profile.SettingsState
 import java.io.File
 import java.util.Locale
 import kotlin.math.PI
@@ -1859,10 +1859,10 @@ class GameScreen(
 
     private fun buildLivesHeartLabel(): String {
         if (premiumEnabled) {
-            return t("INF HEART • ♦ $shieldCount • ⏱ $slowPowerCount", "SONSUZ CAN • ♦ $shieldCount • ⏱ $slowPowerCount")
+            return t("INF HEART • ¦ $shieldCount • ? $slowPowerCount", "SONSUZ CAN • ¦ $shieldCount • ? $slowPowerCount")
         }
         val nextLife = livesManager.secondsUntilNextLife(nowEpochSeconds())
-        val shieldInfo = t("♦ $shieldCount • ⏱ $slowPowerCount", "♦ $shieldCount • ⏱ $slowPowerCount")
+        val shieldInfo = t("¦ $shieldCount • ? $slowPowerCount", "¦ $shieldCount • ? $slowPowerCount")
         return if (livesState.lives >= MAX_LIVES) {
             t("\u2665 ${livesState.lives}/$MAX_LIVES • Full • $shieldInfo", "\u2665 ${livesState.lives}/$MAX_LIVES • Dolu • $shieldInfo")
         } else {
@@ -12287,7 +12287,7 @@ class GameScreen(
                 characters =
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" +
                         " .,;:!?+-/()[]{}'\"&%#@=<>|_" +
-                        "ÇĞİÖŞÜçğıöşüâîûÂÎÛ♥♦"
+                        "ÇĞİÖŞÜçğıöşüâîûÂÎÛ¦¦"
             }
         )
         generator.dispose()

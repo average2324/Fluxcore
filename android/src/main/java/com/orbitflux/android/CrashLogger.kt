@@ -1,4 +1,4 @@
-package com.orbitflux.android
+package com.luminadigitale.fluxcore.android
 
 import android.content.Context
 import android.util.Log

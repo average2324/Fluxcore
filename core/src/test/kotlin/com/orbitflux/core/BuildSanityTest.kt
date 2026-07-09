@@ -1,4 +1,4 @@
-﻿package com.orbitflux.core
+package com.luminadigitale.fluxcore.core
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -6,6 +6,6 @@ import kotlin.test.assertEquals
 class BuildSanityTest {
     @Test
     fun packageNameIsStable() {
-        assertEquals("com.orbitflux.core", HexagonGame::class.java.`package`.name)
+        assertEquals("com.luminadigitale.fluxcore.core", HexagonGame::class.java.`package`.name)
     }
 }

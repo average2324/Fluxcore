@@ -1,6 +1,6 @@
-package com.orbitflux.core.engine
+package com.luminadigitale.fluxcore.core.engine
 
-import com.orbitflux.core.math.AngleMath
+import com.luminadigitale.fluxcore.core.math.AngleMath
 
 object CollisionEngine {
     data class PlayerCollider(

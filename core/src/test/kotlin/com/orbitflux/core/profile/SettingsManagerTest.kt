@@ -1,4 +1,4 @@
-package com.orbitflux.core.profile
+package com.luminadigitale.fluxcore.core.profile
 
 import kotlin.test.Test
 import kotlin.test.assertFalse

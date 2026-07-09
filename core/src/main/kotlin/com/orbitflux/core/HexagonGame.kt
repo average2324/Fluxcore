@@ -1,8 +1,8 @@
-package com.orbitflux.core
+package com.luminadigitale.fluxcore.core
 
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
-import com.orbitflux.core.ui.GameScreen
+import com.luminadigitale.fluxcore.core.ui.GameScreen
 
 class HexagonGame(
     private val autoExitSeconds: Float? = null,
