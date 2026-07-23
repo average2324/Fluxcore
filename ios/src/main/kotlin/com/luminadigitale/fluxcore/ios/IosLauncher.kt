@@ -3,8 +3,8 @@ package com.luminadigitale.fluxcore.ios
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration
 import com.luminadigitale.fluxcore.core.CommercePlatform
+import com.luminadigitale.fluxcore.core.FluxCoreGame
 import com.luminadigitale.fluxcore.core.GameDependencies
-import com.luminadigitale.fluxcore.core.HexagonGame
 import org.robovm.apple.foundation.NSAutoreleasePool
 import org.robovm.apple.uikit.UIApplication
 
@@ -20,7 +20,7 @@ class IosLauncher : IOSApplication.Delegate() {
                 useCompass = false
             }
         return IOSApplication(
-            HexagonGame(
+            FluxCoreGame(
                 dependencies =
                     GameDependencies(
                         premiumPurchaseService = premiumPurchaseService,

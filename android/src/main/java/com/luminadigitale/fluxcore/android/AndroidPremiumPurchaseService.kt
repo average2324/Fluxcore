@@ -26,6 +26,7 @@ class AndroidPremiumPurchaseService(
     private val productId = BuildConfig.PREMIUM_PRODUCT_ID
     private val billingClient = BillingClient.newBuilder(activity)
         .setListener(this)
+        .enableAutoServiceReconnection()
         .enablePendingPurchases(
             PendingPurchasesParams.newBuilder()
                 .enableOneTimeProducts()
@@ -232,7 +233,7 @@ class AndroidPremiumPurchaseService(
                 )
                 .build()
 
-            billingClient.queryProductDetailsAsync(params) { result, products ->
+            billingClient.queryProductDetailsAsync(params) { result, queryProductDetailsResult ->
                 if (result.responseCode != BillingClient.BillingResponseCode.OK) {
                     latestProductDetails = null
                     cachedProduct = null
@@ -245,7 +246,8 @@ class AndroidPremiumPurchaseService(
                     return@queryProductDetailsAsync
                 }
 
-                val details = products.firstOrNull { it.productId == productId }
+                val details = queryProductDetailsResult.productDetailsList
+                    .firstOrNull { it.productId == productId }
                 latestProductDetails = details
                 cachedProduct = details?.toPremiumProduct()
                 onComplete(

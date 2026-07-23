@@ -1,42 +1,40 @@
 # Third Party Notices
 
-This project bundles Noto Sans font files from the Noto Fonts project for multilingual interface rendering.
+FluxCore bundles exactly one third-party asset.
 
-Noto Fonts are distributed under the SIL Open Font License, Version 1.1.
+## Noto Sans (SIL Open Font License 1.1)
 
-Source used:
-- https://github.com/notofonts/noto-fonts
+Noto Sans font files are bundled for multilingual interface rendering.
 
-This project also includes a hand tap loader animation adapted from UIverse content by Pradeepsaranbishnoi (Pradeep Saran).
+- Source: https://github.com/notofonts/noto-fonts
+- License: SIL Open Font License, Version 1.1 — https://openfontlicense.org
 
-Copyright - 2026 Pradeepsaranbishnoi (Pradeep Saran)
+## Everything else is first-party
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+No other third-party asset ships in this app. Specifically:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+- **Audio** — every music loop and sound effect is original work owned by the developer and
+  synthesised in-house for FluxCore. No sample pack, stock library, royalty-free music
+  catalogue, or third-party recording is bundled or used.
+- **Graphics** — all ships, icons, HUD glyphs, particles, effects, and level visuals are
+  generated at runtime by FluxCore's own procedural drawing code. No stock art, icon pack,
+  sprite sheet, emoji artwork, or purchased UI kit is bundled or used.
+- **Code** — the gameplay, rendering, level design, and store code are written for this app.
+  No app template, asset flip, or reused third-party project is involved.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+## Software dependencies
 
-This project also includes emoji-style UI icons (heart, shield, coin) from the Twemoji project.
+Standard build/runtime libraries are resolved from their public repositories and are not
+redistributed as assets in this repo:
 
-Twemoji graphics are distributed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
+- libGDX (Apache License 2.0)
+- Kotlin standard library (Apache License 2.0)
+- RoboVM/MobiVM runtime for the iOS build
+- Google Play Billing and Google Mobile Ads on the Android build only
 
-Source used:
-- https://github.com/twitter/twemoji
+## History
 
-This project also includes background music by Kevin MacLeod (incompetech.com):
-- "Voxel Revolution"
-- "Mesmerizing Galaxy"
-
-Attribution code (CC BY 4.0):
-- "Voxel Revolution" Kevin MacLeod (incompetech.com)
-- "Mesmerizing Galaxy" Kevin MacLeod (incompetech.com)
-- Licensed under Creative Commons: By Attribution 4.0
-- License URL: https://creativecommons.org/licenses/by/4.0/
-
-Source used:
-- https://incompetech.com/music/royalty-free/
-
-Changes made:
-- Audio files are used unmodified (no remix/edit/transform).
-- Attribution is provided for identification only and does not imply endorsement by the original creator.
+Earlier pre-release builds bundled Creative Commons music (Kevin MacLeod), Twemoji-derived
+raster icons, and a UIverse-derived tap graphic. Those files were removed and replaced with
+original in-house audio and procedural vector icons, so no shared third-party binary asset
+remains in the shipped app.

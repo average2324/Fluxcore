@@ -5,7 +5,7 @@ import kotlin.test.assertTrue
 
 class PatternSectorCapTest {
     @Test
-    fun hardModeNeverExceedsHexagon() {
+    fun hardModeKeepsSectorCountInReadableRange() {
         val level = LevelCatalog.create(60)[59]
         val generator = PatternGenerator(level, 778899L)
 

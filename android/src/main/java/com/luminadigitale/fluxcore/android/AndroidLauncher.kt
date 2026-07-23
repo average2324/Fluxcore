@@ -11,8 +11,8 @@ import com.badlogic.gdx.backends.android.AndroidApplication
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.google.android.gms.ads.MobileAds
 import com.luminadigitale.fluxcore.core.CommercePlatform
+import com.luminadigitale.fluxcore.core.FluxCoreGame
 import com.luminadigitale.fluxcore.core.GameDependencies
-import com.luminadigitale.fluxcore.core.HexagonGame
 
 class AndroidLauncher : AndroidApplication() {
     private lateinit var adServices: AndroidAdServices
@@ -46,7 +46,7 @@ class AndroidLauncher : AndroidApplication() {
         adServices = AndroidAdServices(this)
         premiumPurchaseService = AndroidPremiumPurchaseService(this)
 
-        val game = HexagonGame(
+        val game = FluxCoreGame(
             dependencies = GameDependencies(
                 rewardedLifeService = adServices,
                 interstitialAdService = adServices,

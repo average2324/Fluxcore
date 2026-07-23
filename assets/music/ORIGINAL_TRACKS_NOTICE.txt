@@ -1,18 +1,23 @@
 FluxCore Original Music Notice
 ==============================
 
-Track:
-- fluxcore_ui_theme.wav
+Tracks:
+- fluxcore_ui_theme.wav    (menu / shell theme)
+- fluxcore_drift_loop.wav  (gameplay loop A)
+- fluxcore_pulse_loop.wav  (gameplay loop B)
 
 Copyright:
 - Copyright (c) FluxCore project authors.
 
 Source and Licensing:
-- This track was generated in-house for FluxCore using procedural synthesis.
-- No third-party melody, sample pack, or copyrighted recording was imported.
-- You may use this file only as part of FluxCore and its official builds unless
+- Every track here was generated in-house for FluxCore using procedural synthesis.
+- No third-party melody, sample pack, stock library, royalty-free catalogue, or
+  copyrighted recording was imported into any of them.
+- The sound effects in ../sfx are original in-house synthesis under the same terms.
+- You may use these files only as part of FluxCore and its official builds unless
   the project owner provides separate written permission.
 
 Compliance intent:
-- Added to reduce legal risk in distribution stores by avoiding unverified
-  external music assets.
+- FluxCore ships no audio asset that is byte-shared with any other application.
+  This keeps the submitted binary free of the shared-asset fingerprints that App
+  Review guideline 4.3 treats as a repackaging signal.

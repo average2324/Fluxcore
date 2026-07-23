@@ -10798,18 +10798,21 @@ class GameScreen(
         }
     }
 
+    // FluxCore ships no third-party raster icons. These stay null on purpose so every HUD
+    // glyph comes from the ShapeRenderer vector paths below (drawHeartIcon, drawShieldIcon,
+    // drawCoinIcon, drawTimeSlowIcon), which is also what makes the icon set self-consistent.
     private fun loadTutorialTouchIcon() {
         tutorialTouchIcon?.dispose()
-        tutorialTouchIcon = loadTextureWithQuality(Gdx.files.internal("ui/touch_tap.png"), minEdge = 192)
+        tutorialTouchIcon = null
     }
 
     private fun loadUiStatusIcons() {
         uiHeartIcon?.dispose()
         uiShieldIcon?.dispose()
         uiCoinIcon?.dispose()
-        uiHeartIcon = loadTextureWithQuality(Gdx.files.internal("ui/icons/2764.png"), minEdge = 160)
-        uiShieldIcon = loadTextureWithQuality(Gdx.files.internal("ui/icons/1f6e1.png"), minEdge = 160)
-        uiCoinIcon = loadTextureWithQuality(Gdx.files.internal("ui/icons/1fa99.png"), minEdge = 160)
+        uiHeartIcon = null
+        uiShieldIcon = null
+        uiCoinIcon = null
     }
 
     private fun loadBlockBriefingState() {
@@ -10891,21 +10894,11 @@ class GameScreen(
         uiMusic = null
 
         val introTrack = loadBackgroundMusicCandidates(
-            listOf(
-                "music/Mesmerizing Galaxy Loop.mp3",
-                "music/mesmerizing_galaxy_loop.mp3",
-                "music/mesmerizing_galaxy_loop.ogg"
-            ),
+            listOf("music/fluxcore_drift_loop.wav"),
             loop = false
         )
         val mainTrack = loadBackgroundMusicCandidates(
-            listOf(
-                "music/Voxel Revolution.mp3",
-                "music/voxel_revolution.mp3",
-                "music/custom_loop.ogg",
-                "music/custom_loop.wav",
-                "music/custom_loop.mp3"
-            ),
+            listOf("music/fluxcore_pulse_loop.wav"),
             loop = false
         )
         uiMusic = loadBackgroundMusicCandidates(
@@ -12235,42 +12228,51 @@ class GameScreen(
 
     private fun policyLicense(): String {
         val en = """
-            FLUXCORE – MUSIC LICENSE & ATTRIBUTION
-            Date: 28.03.2026
+            FLUXCORE – ASSET OWNERSHIP & ATTRIBUTION
             Owner: Taha Bayar
             Contact: luminadigitale@gmail.com
 
-            Licensed tracks used in FluxCore:
-            1) "Voxel Revolution" — Kevin MacLeod (incompetech.com)
-            2) "Mesmerizing Galaxy" — Kevin MacLeod (incompetech.com)
+            Audio:
+            Every music loop and sound effect in FluxCore is original work owned by the
+            developer, synthesised in-house for this game. No sample pack, stock library,
+            royalty-free catalogue, or third-party recording is bundled or used.
 
-            License:
-            Creative Commons Attribution 4.0 International (CC BY 4.0)
-            https://creativecommons.org/licenses/by/4.0/
+            Graphics:
+            All ships, icons, HUD glyphs, effects, and level visuals are generated at runtime
+            from FluxCore's own procedural drawing code. No stock art, icon pack, sprite
+            sheet, purchased template, or emoji artwork is bundled or used.
 
-            Usage statement:
-            Both tracks are used unmodified in-game.
-            Proper credit, creator reference, and license URL are included in this screen and project notices.
-            No additional legal/technical restrictions are applied beyond the CC BY 4.0 terms.
+            Third-party components:
+            The only third-party asset in this app is the Noto Sans typeface, used for
+            multilingual text and distributed under the SIL Open Font License 1.1.
+            https://openfontlicense.org
+
+            FluxCore's gameplay code, level design, and content are written for this app and
+            are not derived from any template, asset flip, or reused project.
         """.trimIndent()
         val tr = """
-            FLUXCORE – MÜZİK LİSANSI VE ATIF
-            Tarih: 28.03.2026
+            FLUXCORE – VARLIK SAHİPLİĞİ VE ATIF
             Sahibi: Taha Bayar
             İletişim: luminadigitale@gmail.com
 
-            FluxCore içinde kullanılan lisanslı parçalar:
-            1) "Voxel Revolution" — Kevin MacLeod (incompetech.com)
-            2) "Mesmerizing Galaxy" — Kevin MacLeod (incompetech.com)
+            Ses:
+            FluxCore içindeki tüm müzik döngüleri ve ses efektleri geliştiriciye ait özgün
+            eserlerdir ve bu oyun için kurum içinde sentezlenmiştir. Hiçbir sample paketi,
+            stok kütüphane, telifsiz katalog veya üçüncü taraf kayıt kullanılmamıştır.
 
-            Lisans:
-            Creative Commons Attribution 4.0 International (CC BY 4.0)
-            https://creativecommons.org/licenses/by/4.0/
+            Grafik:
+            Tüm gemiler, ikonlar, HUD sembolleri, efektler ve seviye görselleri FluxCore'un
+            kendi prosedürel çizim koduyla çalışma anında üretilir. Hiçbir stok görsel, ikon
+            paketi, sprite sayfası, satın alınmış şablon veya emoji grafiği kullanılmamıştır.
 
-            Kullanım beyanı:
-            Her iki parça da oyun içinde değiştirilmeden kullanılmıştır.
-            Gerekli atıf, eser sahibi bilgisi ve lisans bağlantısı bu ekranda ve proje bildirimlerinde yer alır.
-            CC BY 4.0 şartları dışında ek yasal/teknik kısıt uygulanmaz.
+            Üçüncü taraf bileşenler:
+            Uygulamadaki tek üçüncü taraf varlık, çok dilli metin için kullanılan ve SIL Open
+            Font License 1.1 ile dağıtılan Noto Sans yazı tipidir.
+            https://openfontlicense.org
+
+            FluxCore'un oyun kodu, seviye tasarımı ve içeriği bu uygulama için yazılmıştır;
+            herhangi bir şablondan, hazır varlık paketinden veya yeniden paketlenmiş bir
+            projeden türetilmemiştir.
         """.trimIndent()
         return t(en, tr)
     }

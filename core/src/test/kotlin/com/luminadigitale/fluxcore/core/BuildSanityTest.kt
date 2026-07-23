@@ -6,6 +6,6 @@ import kotlin.test.assertEquals
 class BuildSanityTest {
     @Test
     fun packageNameIsStable() {
-        assertEquals("com.luminadigitale.fluxcore.core", HexagonGame::class.java.`package`.name)
+        assertEquals("com.luminadigitale.fluxcore.core", FluxCoreGame::class.java.`package`.name)
     }
 }

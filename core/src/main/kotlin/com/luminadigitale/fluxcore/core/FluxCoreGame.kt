@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.luminadigitale.fluxcore.core.ui.GameScreen
 
-class HexagonGame(
+class FluxCoreGame(
     private val autoExitSeconds: Float? = null,
     private val dependencies: GameDependencies = GameDependencies()
 ) : Game() {
