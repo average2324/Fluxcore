@@ -21,19 +21,27 @@ build 17'yi gönderirsin — kaybın olmaz. Bu yüzden **A aşamasını B'den ö
 
 ## AŞAMA A — Şimdi yap (build'i göndermeden)
 
-### A1. Resolution Center'a itiraz mesajını yaz
+### A1. App Review'a itiraz mesajını yaz
+
+> **İsim notu:** Eskiden "Resolution Center" denen yer artık o adla yok. Yeni App Store
+> Connect'te aynı işlevi **gönderim sayfasındaki "Messages" bölümü** ve altındaki
+> **"Reply to App Review"** bağlantısı görüyor. Aradığın buton bu.
 
 1. Aç: **https://appstoreconnect.apple.com/apps**
 2. **FluxCore** uygulamasına tıkla
-3. Sol menüde reddedilen sürümü seç (**iOS App 1.0 — Rejected**)
-4. Sayfada **"App Review"** / **"Resolution Center"** bölümünü aç
-   (doğrudan link: https://appstoreconnect.apple.com/apps → app → App Review)
-5. Apple'ın mesajının altındaki **"Reply"** kutusuna,
-   [`APP_REVIEW_4.3_RESPONSE.md`](APP_REVIEW_4.3_RESPONSE.md) dosyasındaki
-   **"## Draft reply"** başlığı ile **"---"** arasındaki metni **olduğu gibi** yapıştır.
-   - `## Notes for you, not for Apple` bölümünü **gönderme**. O bölüm sana ait.
-   - Doldurulacak boşluk kalmadı, metin hazır.
-6. **Send** / **Gönder**
+3. Reddedilen gönderimi aç. Doğru sayfada olduğunu şundan anlarsın: sayfada
+   **"Items Submitted (1)"** tablosu ve altında **"Messages (1)"** başlığı vardır.
+   - Tabloda: `iOS App 1.0 · 1.0 (16) · App Version · Rejected · 4.3.0 Design: Spam`
+4. **Messages** bölümünde Apple'ın mesajı görünür. Mesajın en altındaki
+   **"Reply to App Review"** bağlantısına tıkla.
+5. Açılan kutuya [`GONDER_1_RESOLUTION_CENTER.txt`](GONDER_1_RESOLUTION_CENTER.txt)
+   dosyasının **tamamını** yapıştır.
+6. **Send**
+
+**"Reply to App Review" bağlantısını göremiyorsan:** gönderim kapanmış olabilir. O
+durumda https://developer.apple.com/contact/app-store/ adresinden
+**App Review → Submission/App Rejection** konusuyla aynı metni gönder, mesajın başına
+`Submission ID: 749f4899-adda-41f4-9d50-3137422e0eed` satırını ekle.
 
 > Türkçe yazmak istersen serbestsin, Apple "Reply to this message in your preferred language"
 > diyor. Ama İngilizce gönderirsen daha hızlı ve daha az yanlış anlaşılmayla ilerler.
