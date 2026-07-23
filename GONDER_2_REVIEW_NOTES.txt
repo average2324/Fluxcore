@@ -1,24 +1,50 @@
 FluxCore is an original single-player reflex arcade game developed by us. It is not based
-on an app template, a purchased project, or a reskin.
+on an app template, a purchased project, an app generator, or a reskin of another app.
 
-Asset ownership in this build:
+WHAT IS IN THE APP
+
+This is a full campaign game, not a single endless loop:
+- 100 designed levels, grouped into 10 themed zones (Dock Departure, Asteroid Belt,
+  Lagrange Drift, Deep Orbit, Fracture Zone, Command Burn, War Horizon, Bio Defense,
+  Nova Ambush, Kitchen Rush). Each zone has its own palette, hazard set and pacing.
+- A level-select map for replaying any reached stage.
+- 11 unlockable ships bought with an in-game soft currency earned by clearing levels.
+  Each ship has a different collision profile that changes gameplay.
+- Consumable shields and a time-slow ability, both earned in game.
+- Three difficulty modes that adjust hazard speed and readability.
+- A guided tutorial, a lives system, and full English and Turkish localisation.
+
+ASSET OWNERSHIP IN THIS BUILD
+
 - All music and sound effects are original work, synthesised in-house for this app.
 - All in-game graphics (ships, HUD icons, effects, backgrounds, level visuals) are
   generated procedurally at runtime by our own rendering code. No sprite sheets, icon
-  packs, stock art or emoji artwork are bundled.
+  packs, stock art, or emoji artwork are bundled.
 - The only third-party asset in the app is the Noto Sans typeface (SIL Open Font License),
   used for multilingual text rendering.
 
-Regarding the previous 4.3(a) rejection of build 16: that build bundled two widely
-redistributed Creative Commons music tracks and three Twemoji-derived icons. Those files
-have been removed in this build and replaced with original in-house audio and procedural
-vector icons, so the binary no longer shares file content with any other app.
+REGARDING THE PREVIOUS 4.3(a) REJECTION OF BUILD 16
 
-Development history: this game has been in closed testing on Google Play under our own
-developer account since 31 March 2026 (Android package com.orbitflux), with six releases
-through 22 July 2026. Play Console records are available on request.
+Build 16 bundled two widely redistributed Creative Commons music tracks ("Voxel Revolution"
+and "Mesmerizing Galaxy" by Kevin MacLeod) and three Twemoji-derived UI icons. Those files
+appear unmodified in a large number of unrelated published apps, so our binary shared exact
+file content with them. We removed all of these files in this build and replaced them with
+original in-house audio and procedural vector icons. The binary no longer shares file
+content with any other app.
 
-The app has no account system, no user-generated content, and no server backend. All
-progress is stored locally on device. The optional in-app purchase (FluxCore Premium,
-fluxcore_premium) is a one-time non-consumable unlock, not a subscription. No advertising
-SDK is present in the iOS build.
+DEVELOPMENT HISTORY
+
+This game has been in closed testing on Google Play under our own developer account since
+31 March 2026 (Android package com.orbitflux), with six releases through 22 July 2026.
+Play Console records and screenshots are available on request.
+
+TECHNICAL NOTES FOR REVIEW
+
+- The app has no account system, no sign-up, no user-generated content, and no server
+  backend. All progress is stored locally on device.
+- No advertising SDK is present in the iOS build.
+- The optional in-app purchase (FluxCore Premium, product ID fluxcore_premium) is a
+  one-time non-consumable unlock granting unlimited lives. It is not a subscription, and
+  the full 100-level campaign is playable without purchasing it.
+- Restore Purchases is available in the Premium screen and is user-triggered.
+- The app is portrait-only and supports iPhone and iPad.
