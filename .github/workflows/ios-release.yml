@@ -38,7 +38,9 @@ jobs:
       IOS_SKIP_SIGNING: ${{ secrets.IOS_SKIP_SIGNING }}
       IOS_SIGN_IDENTITY: ${{ secrets.IOS_SIGN_IDENTITY }}
       IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
-      KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+      # Falls back to a fixed string so a missing secret cannot create a passwordless
+      # keychain. The keychain is created in RUNNER_TEMP and dies with the runner.
+      KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD || 'fluxcore-ephemeral-ci-keychain' }}
       IOS_DISTRIBUTION_CERTIFICATE_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_BASE64 }}
       IOS_DISTRIBUTION_CERTIFICATE_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERTIFICATE_PASSWORD }}
       IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
