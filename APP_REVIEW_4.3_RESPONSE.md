@@ -3,9 +3,10 @@
 Submission ID: 749f4899-adda-41f4-9d50-3137422e0eed
 App: FluxCore — bundle `com.luminadigitale.fluxcore`
 
-> **Before sending, fill in the two facts marked `<<< >>>` below.** Everything else is
-> ready. Do not send a claim you cannot back with a date or a link — App Review can
-> check, and an unsupported claim in a 4.3 reply makes things worse, not better.
+> **Read the "Notes for you" section at the bottom before sending.** An earlier version of
+> this draft argued that FluxCore was published on Android first and was therefore the
+> original that someone else copied. **That argument has been removed because the dates do
+> not support it** — see the notes. Do not reinstate it.
 
 ---
 
@@ -13,73 +14,79 @@ App: FluxCore — bundle `com.luminadigitale.fluxcore`
 
 Hello,
 
-Thank you for reviewing FluxCore 1.0 (16). We would like to resolve the 4.3(a) concern,
-and we have submitted build 1.0 (17) with the changes described below.
+Thank you for reviewing FluxCore 1.0 (16). We would like to resolve the 4.3(a) concern and
+have submitted build 1.0 (17) with the changes described below.
 
-**We are not aware of any terminated account associated with us**
+**Our situation**
 
-To state it plainly: we have never held another Apple Developer Program account, we have
-never had an account terminated, and we have not submitted this game or any similar app
-from any other account. This is our first app submission, as your message notes.
+This is our first Apple Developer Program account and our first app submission. We have
+never held another Apple developer account, we have never had an account terminated, and
+we have not submitted this game or a similar app under any other account. FluxCore was
+developed by us and is not based on a purchased template, an app generator, a reskin, or
+any third-party project.
 
-**FluxCore is our own work, and it was published on Android first**
+**Our development history is documented and dated**
 
-FluxCore was developed by us and has been publicly available on Google Play as
-`com.orbitflux` since <<< FIRST PLAY STORE RELEASE DATE — check Play Console →
-your app → Releases, and use the first production rollout date >>>. It is currently at
-version <<< CURRENT PLAY VERSION, e.g. 0.2.12 >>>.
+FluxCore has been in continuous, iterative development by us since March 2026, with a
+closed testing track on Google Play under our own developer account. Google's own records
+show the following release history for `com.orbitflux`:
 
-Play Console shows the full release history under our account, and we can supply the
-signed `.aab` artifacts, release dates, and our development history on request.
+| Version | Track | Date |
+|---|---|---|
+| 0.2.4 (4) | Closed alpha | 31 March 2026 |
+| 0.2.6 (6) | Closed alpha | 4 April 2026 |
+| 0.2.7 (7) | Closed alpha | 12 April 2026 |
+| 0.2.8 (8) | Closed alpha | 23 May 2026 |
+| 0.2.9 (9) | Closed alpha | 5 June 2026 |
+| 0.2.12 (12) | Production | 22 July 2026 |
 
-**This raises a possibility we would ask you to consider**
+This is a four-month record of incremental development and testing, hosted by Google and
+verifiable on request. We would respectfully note that a repackaged template or a reskinned
+third-party app does not have a development history like this. We are glad to provide
+Play Console access, the signed artifacts, or our source repository.
 
-Because our Android build has been publicly downloadable for months, its package can be
-decompiled and reskinned by a third party without our knowledge or consent. If the
-terminated account you matched against submitted an app derived from our published
-Android build, then the similarity you detected would be genuine — but with FluxCore as
-the original and the other app as the copy.
+**We believe we found a genuine cause for the match, and we have removed it**
 
-We are not asserting this as fact, because we cannot see the app you matched against.
-**We would be grateful if you could tell us which app or bundle ID FluxCore was matched
-to, or which specific files or metadata triggered the match.** With that information we
-can demonstrate precedence with dated evidence, or correct whatever is actually at issue.
+Rather than simply disputing the rejection, we audited our bundle for anything that could
+be byte-identical to another submitted app. We found four such items and removed all of
+them in build 1.0 (17):
 
-**What we changed in build 1.0 (17)**
-
-Independently of the above, we audited our bundle for any file that could be
-byte-identical to another submitted app, and removed all of them:
-
-1. Two Creative Commons background tracks (Kevin MacLeod, "Voxel Revolution" and
-   "Mesmerizing Galaxy"). These files are widely redistributed and are the most likely
-   source of a binary-level match. They are replaced with original music we synthesised
-   in-house for FluxCore.
-2. Three UI icons derived from the open-source Twemoji set. All HUD icons are now drawn
-   at runtime by FluxCore's own vector rendering code.
+1. Two Creative Commons background music tracks — "Voxel Revolution" and "Mesmerizing
+   Galaxy" by Kevin MacLeod. These specific files are redistributed extremely widely and
+   appear unmodified in a very large number of published apps. We now understand that
+   bundling them made our binary share exact file content with many unrelated apps,
+   plausibly including apps from the account you matched us against. They have been
+   replaced with original music we synthesised in-house for FluxCore.
+2. Three UI icons derived from the open-source Twemoji set (heart, shield, coin), which
+   are likewise present in a large number of apps. All HUD icons are now drawn at runtime
+   by FluxCore's own vector rendering code.
 3. A tap-indicator graphic adapted from an open-source UI snippet, now also drawn
    procedurally.
-4. An unused bundled image.
+4. An unused bundled image left over from development.
 
-After these changes, the only third-party asset in the app is the Noto Sans typeface
+After these changes, the only third-party asset in FluxCore is the Noto Sans typeface
 (SIL Open Font License), used for multilingual text. Every visual element — ships, icons,
-effects, backgrounds, level visuals — is generated at runtime by our own code, and all
-audio is our own original work. We also renamed internal code identifiers that still
-carried this project's earlier working title, so the binary no longer contains it.
+effects, backgrounds, level visuals — is generated at runtime by our own rendering code,
+and all music and sound effects are our own original work. We also renamed internal code
+identifiers and package paths that still carried this project's earlier working title, so
+the binary no longer contains that name anywhere.
 
-**On the specific factors listed in your message**
+**Request**
 
-- We have not submitted this or a similar app from any other account.
-- We have not used a repackaged app template.
-- We did not purchase an app template or third-party code for this app.
-- We have not submitted several similar apps.
+If build 1.0 (17) still matches something in your records, we would be very grateful if you
+could tell us which app or bundle ID FluxCore was matched against, or which specific files
+or metadata triggered the match. We will address that exact item. Without that detail we
+can only audit our own bundle, which we have now done thoroughly.
 
-FluxCore is a single-player reflex arcade game with a 100-level campaign, per-level
-pattern design, a level-select map, a ship store with in-game currency, a lives system,
-consumable shields and a time-slow ability, difficulty modes, a tutorial, and full
-English/Turkish localisation.
+**About the app**
 
-We are glad to provide source repository access, build artifacts, Play Console release
-history, or a video walkthrough — whatever is most useful to you.
+FluxCore is a single-player reflex arcade game with a 100-level campaign, per-level pattern
+design, a level-select map, a ship store with an in-game soft currency, a lives system,
+consumable shields and a time-slow ability, three difficulty modes, a tutorial flow, and
+full English and Turkish localisation.
+
+We are happy to provide source repository access, build artifacts, or a video walkthrough
+of the game — whatever is most useful to you.
 
 Thank you for your time.
 
@@ -87,45 +94,58 @@ Thank you for your time.
 
 ## Notes for you, not for Apple
 
-### Your strongest card is the Google Play release date
+### Why the "we were cloned" argument is not in the draft
 
-Apple's wording is that the *other* account submitted first, from their point of view.
-The one thing that flips this is **provable precedence**: a dated, Apple-verifiable public
-release of the same game under your control, predating the other submission.
+The releases from March to June are **closed testing (kapalı test)** — reachable only by
+the specific testers you invited, not downloadable by the public. Production went live on
+**22 July**, in 177 countries, with **5 installs**. Apple rejected build 12 on **9 July**
+and build 16 on **23 July**.
 
-Your Play Console first-release date is exactly that. Get it before you reply, and put the
-real date in the draft. If the Android app is not actually live on Play, tell me — the
-whole argument above has to be rewritten, because it would rest on nothing.
+So there was no publicly downloadable APK before Apple flagged you. An outsider could not
+have pulled your build from Play, reskinned it, and shipped it — the public release did not
+exist yet and still has five users. Claiming "our app was public first, so they copied us"
+would be checkably false, and a false statement in a 4.3 reply is how a recoverable case
+becomes a terminated account. Please do not add it back.
 
-### A problem you should know about
+The one scenario that is not fully closed off is a **tester leak** — someone on your closed
+alpha list redistributing the APK. If you know who was on that list and have any reason to
+suspect it, that is worth investigating on your side. It is not something to assert to
+Apple without evidence.
 
-This repository's git history starts on **2026-07-04**, and its first commit is
-"Prepare secure iOS migration" — not the start of the project. The real development
-history from March–June 2026 is not in this repo, and the original project folder
-(`Desktop/Hexagon`, per the leftover IDE config) is no longer on this machine.
+### What the closed-test history is genuinely worth
 
-That matters because git history is normally the cleanest proof of original authorship.
-Right now you cannot show it from here. Before replying to Apple, try to recover:
+It is your best evidence, just for a different claim than precedence. Six dated builds over
+four months, hosted by Google, directly rebuts three of the five spam factors Apple listed:
+repackaged template, purchased template, and asset-flip. Template reskins do not go through
+a four-month iterative alpha. The asset file dates in your source tree (27–28 March 2026)
+line up with the first closed release on 31 March, which corroborates it.
 
-- the original GitHub repository, if the project was ever pushed anywhere else;
-- any backup of the `Hexagon` project folder;
-- the Play Console release history (this survives regardless — it is on Google's servers);
-- dated design files, screenshots, or notes from March–June.
+That is why the table is now in the reply itself.
 
-The asset timestamps in this repo still read 2026-03-27/28, and the bundled IDE config
-still points at `Desktop/Hexagon`. That is weak corroboration, not proof, but keep it.
+### What the most likely cause actually is
 
-### If the Android app is public, that is also the leak vector
+With the clone theory out, the shared-asset explanation becomes the leading one, and it is
+a real, concrete, fixable thing rather than a guess:
 
-A published libGDX/Kotlin Android app decompiles very easily. If someone pulled your APK,
-reskinned it, and shipped it to the App Store from an account that was later terminated,
-you would get exactly the rejection you received. This is a known pattern and Apple's
-reviewers do understand it — but only if you give them the dated evidence and ask them to
-name the matched app.
+The Kevin MacLeod tracks plus Twemoji icons are the standard asset kit of mass-produced
+arcade shovelware. Accounts that ship dozens of those apps are exactly the accounts Apple
+terminates. Your bundle contained the same files, so a content-hash comparison would put
+FluxCore in that cluster. That is very likely what "shares a similar binary" meant.
 
-### Still worth checking, regardless
+This is the hopeful part: it is precisely what build 17 removes. Your bundle now shares no
+file with any other app except a Google font.
 
-Your App Store Connect metadata — name, subtitle, keywords, description, screenshots — is
-half of the "binary, metadata, and/or concept" test and I cannot see it from the code.
-Generic arcade keywords and stock-looking screenshots feed the match. Review it before you
-resubmit.
+### The remaining risk you should be aware of
+
+Apple also correlates submissions by developer identity — device, IP, payment details,
+address. If several apps are submitted from the same machine and account in a short window,
+their systems can group them, and "several similar apps" is one of the listed spam factors
+in your rejection letter. I cannot see your App Store Connect account, so I cannot tell you
+whether this is a factor. You can.
+
+### Metadata, which I still cannot see
+
+Your Play listing is titled **"Flux Core: Arcade Survival"**. "Arcade Survival" is a very
+generic descriptor, and app name, subtitle, keywords, description and screenshots are half
+of the "binary, metadata, and/or concept" test. Review your App Store Connect metadata for
+anything that reads like a template listing before you resubmit.
