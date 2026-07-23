@@ -1,0 +1,80 @@
+Hello,
+
+Thank you for reviewing FluxCore 1.0 (16). We would like to resolve the 4.3(a) concern.
+Build 1.0 (17) is uploaded and ready to submit, with the changes described below. Before
+we resubmit, we would like to ask you one question, at the end of this message.
+
+OUR SITUATION
+
+This is our first Apple Developer Program account and our first app submission. We have
+never held another Apple developer account, we have never had an account terminated, and
+we have not submitted this game or a similar app under any other account. FluxCore was
+developed by us and is not based on a purchased template, an app generator, a reskin, or
+any third-party project.
+
+OUR DEVELOPMENT HISTORY IS DOCUMENTED AND DATED
+
+FluxCore has been in continuous, iterative development by us since March 2026, with a
+closed testing track on Google Play under our own developer account. Google's own records
+show the following release history for the Android package com.orbitflux:
+
+  - 0.2.4 (build 4)   Closed alpha    31 March 2026
+  - 0.2.6 (build 6)   Closed alpha    4 April 2026
+  - 0.2.7 (build 7)   Closed alpha    12 April 2026
+  - 0.2.8 (build 8)   Closed alpha    23 May 2026
+  - 0.2.9 (build 9)   Closed alpha    5 June 2026
+  - 0.2.12 (build 12) Production      22 July 2026
+
+This is a four-month record of incremental development and testing, hosted by Google and
+verifiable on request. We would respectfully note that a repackaged template or a reskinned
+third-party app does not have a development history like this. We are glad to provide
+Play Console screenshots, the signed artifacts, or access to our source repository.
+
+WE BELIEVE WE FOUND A GENUINE CAUSE FOR THE MATCH, AND WE HAVE REMOVED IT
+
+Rather than simply disputing the rejection, we audited our app bundle for anything that
+could be byte-identical to another submitted app. We found four such items and removed all
+of them in build 1.0 (17):
+
+1. Two Creative Commons background music tracks, "Voxel Revolution" and "Mesmerizing
+   Galaxy" by Kevin MacLeod. These specific files are redistributed extremely widely and
+   appear unmodified in a very large number of published apps. We now understand that
+   bundling them made our binary share exact file content with many unrelated apps,
+   plausibly including apps from the account you matched us against. They have been
+   replaced with original music we synthesised in-house for FluxCore.
+
+2. Three UI icons derived from the open-source Twemoji set (heart, shield, coin), which
+   are likewise present in a large number of apps. All HUD icons are now drawn at runtime
+   by FluxCore's own vector rendering code.
+
+3. A tap-indicator graphic adapted from an open-source UI snippet, now also drawn
+   procedurally.
+
+4. An unused bundled image left over from development.
+
+After these changes, the only third-party asset in FluxCore is the Noto Sans typeface
+(SIL Open Font License), used for multilingual text. Every visual element, including
+ships, icons, effects, backgrounds and level visuals, is generated at runtime by our own
+rendering code, and all music and sound effects are our own original work. We also renamed
+internal code identifiers and package paths that still carried this project's earlier
+working title, so the binary no longer contains that name anywhere.
+
+ABOUT THE APP
+
+FluxCore is a single-player reflex arcade game with a 100-level campaign, per-level pattern
+design, a level-select map, a ship store with an in-game soft currency, a lives system,
+consumable shields and a time-slow ability, three difficulty modes, a tutorial flow, and
+full English and Turkish localisation.
+
+OUR REQUEST
+
+Before we resubmit, could you please tell us which app or bundle ID FluxCore was matched
+against, or which specific files or metadata triggered the match? If something in our app
+still matches your records after the changes above, we want to correct that exact item
+rather than resubmit and guess. Without that detail we can only audit our own bundle,
+which we have now done thoroughly.
+
+We are happy to provide source repository access, build artifacts, Play Console release
+history, or a video walkthrough of the game, whatever is most useful to you.
+
+Thank you for your time.

@@ -1,0 +1,24 @@
+FluxCore is an original single-player reflex arcade game developed by us. It is not based
+on an app template, a purchased project, or a reskin.
+
+Asset ownership in this build:
+- All music and sound effects are original work, synthesised in-house for this app.
+- All in-game graphics (ships, HUD icons, effects, backgrounds, level visuals) are
+  generated procedurally at runtime by our own rendering code. No sprite sheets, icon
+  packs, stock art or emoji artwork are bundled.
+- The only third-party asset in the app is the Noto Sans typeface (SIL Open Font License),
+  used for multilingual text rendering.
+
+Regarding the previous 4.3(a) rejection of build 16: that build bundled two widely
+redistributed Creative Commons music tracks and three Twemoji-derived icons. Those files
+have been removed in this build and replaced with original in-house audio and procedural
+vector icons, so the binary no longer shares file content with any other app.
+
+Development history: this game has been in closed testing on Google Play under our own
+developer account since 31 March 2026 (Android package com.orbitflux), with six releases
+through 22 July 2026. Play Console records are available on request.
+
+The app has no account system, no user-generated content, and no server backend. All
+progress is stored locally on device. The optional in-app purchase (FluxCore Premium,
+fluxcore_premium) is a one-time non-consumable unlock, not a subscription. No advertising
+SDK is present in the iOS build.
