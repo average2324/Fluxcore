@@ -5910,71 +5910,43 @@ class GameScreen(
     }
 
     private fun drawLevelSelectScrollHint(container: UiRect) {
-        if (maxLevelSelectScrollOffset() <= 0.5f || levelSelectScrollHintDismissed) {
+        val maxScroll = maxLevelSelectScrollOffset()
+        if (maxScroll <= 0.5f) {
             return
         }
-        val cycle = (worldTime % 1.6f) / 1.6f
-        val fade = (0.15f + 0.85f * (0.5f + 0.5f * sin(cycle * MathUtils.PI2))).coerceIn(0.12f, 1f)
-        val swipeAmp = sy(52f).coerceIn(28f, 72f)
-        val handSize = sy(112f).coerceIn(86f, 140f)
-        val centerX = container.x + container.width * 0.5f
-        val laneY = container.y + container.height * 0.56f
-        val handY = laneY - swipeAmp * (0.5f - 0.5f * cos(cycle * MathUtils.PI2))
-        val arrowW = sx(32f).coerceIn(22f, 40f)
-        val arrowH = sy(16f).coerceIn(12f, 22f)
+        // Edge-anchored directional indicators: down-chevrons at the bottom while more
+        // levels sit below, up-chevrons at the top while more sit above. This reads as a
+        // clear "there is more this way" state instead of a generic centred swipe hint.
+        val offset = levelSelectScrollOffset
+        val edge = sy(5f)
+        val canDown = offset < maxScroll - edge
+        val canUp = offset > edge
+        val pulse = 0.55f + 0.45f * (0.5f + 0.5f * sin(worldTime * 4.2f))
+        val cx = container.x + container.width * 0.5f
+        val chevW = sx(30f).coerceIn(20f, 42f)
+        val chevH = sy(13f).coerceIn(9f, 19f)
+        val gap = sy(10f).coerceIn(7f, 15f)
+        val inset = sy(18f).coerceIn(12f, 28f)
+
         shapes.projectionMatrix = camera.combined
         shapes.begin(ShapeRenderer.ShapeType.Filled)
-        for (index in 0..1) {
-            val yUp = laneY + sy(8f).coerceIn(6f, 12f) + index * sy(14f).coerceIn(10f, 18f)
-            val yDown = laneY - sy(22f).coerceIn(16f, 30f) - index * sy(14f).coerceIn(10f, 18f)
-            shapes.color = chromeAccent.cpy().mul(1f, 1f, 1f, (0.42f - index * 0.12f) * fade)
-            shapes.triangle(
-                centerX - arrowW * 0.5f,
-                yDown,
-                centerX + arrowW * 0.5f,
-                yDown,
-                centerX,
-                yDown - arrowH
-            )
-            shapes.triangle(
-                centerX - arrowW * 0.5f,
-                yUp,
-                centerX + arrowW * 0.5f,
-                yUp,
-                centerX,
-                yUp + arrowH
-            )
+        if (canDown) {
+            val baseY = container.y + inset
+            for (k in 0..1) {
+                val y = baseY + k * gap
+                shapes.color = chromeAccent.cpy().mul(1f, 1f, 1f, (0.72f - k * 0.3f) * pulse)
+                shapes.triangle(cx - chevW * 0.5f, y + chevH, cx + chevW * 0.5f, y + chevH, cx, y)
+            }
+        }
+        if (canUp) {
+            val baseY = container.y + container.height - inset
+            for (k in 0..1) {
+                val y = baseY - k * gap
+                shapes.color = chromeAccent.cpy().mul(1f, 1f, 1f, (0.72f - k * 0.3f) * pulse)
+                shapes.triangle(cx - chevW * 0.5f, y - chevH, cx + chevW * 0.5f, y - chevH, cx, y)
+            }
         }
         shapes.end()
-
-        batch.projectionMatrix = camera.combined
-        batch.begin()
-        val oldColor = batch.color.cpy()
-        batch.setColor(1f, 1f, 1f, fade)
-        val drew = if (tutorialTouchIcon != null) {
-            val drawSize = handSize.roundToInt().toFloat().coerceAtLeast(1f)
-            val drawX = (centerX - drawSize * 0.5f).roundToInt().toFloat()
-            val drawY = (handY - drawSize * 0.5f).roundToInt().toFloat()
-            batch.draw(tutorialTouchIcon, drawX, drawY, drawSize, drawSize)
-            true
-        } else {
-            false
-        }
-        if (!drew) {
-            chipFont.color = chromeInk
-            val hint = t("SWIPE", "KAYDIR")
-            chipFont.draw(batch, hint, centerX - estimateTextWidth(chipFont, hint) * 0.5f, handY + sy(6f))
-        }
-        val hintText = t("Swipe to scroll levels", "Seviyeler için kaydır")
-        metaFont.color = chromeMuted.cpy().mul(1f, 1f, 1f, fade)
-        metaFont.draw(
-            batch,
-            hintText,
-            centerX - estimateTextWidth(metaFont, hintText) * 0.5f,
-            container.y + sy(42f).coerceIn(30f, 54f)
-        )
-        batch.setColor(oldColor)
-        batch.end()
     }
 
     private fun drawResultOverlay(palette: NeonPalette) {
