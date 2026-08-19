@@ -402,6 +402,7 @@ class GameScreen(
     private var menuReturnToPause = false
     private var premiumReturnOverlay = OverlayMode.INTRO
     private var simulationResultDelaySeconds = 0f
+    private var simDiagFrames = 0
     private var simulationStepCooldownSeconds = 0f
     private val shipSkins = ArrayList<ShipSkin>()
     private val unlockedShipIds = LinkedHashSet<String>()
@@ -694,6 +695,20 @@ class GameScreen(
         handleRunResultTransitions()
         updatePresentationEffects(fluidDelta)
         drawFrame()
+
+        // Sim-mode-only diagnostic. Release builds never enable simulationControlEnabled,
+        // so this is silent in production; it lets the CI simulator repro confirm that
+        // gameplay actually reaches RUNNING and renders obstacles.
+        if (simulationControlEnabled) {
+            simDiagFrames += 1
+            if (simDiagFrames % 120 == 0) {
+                Gdx.app.log(
+                    "SimRepro",
+                    "frame=$simDiagFrames overlay=$overlayMode phase=${simulation.runPhase} " +
+                        "obstacles=${simulation.obstacles.size} missiles=${simulation.missiles.size}"
+                )
+            }
+        }
     }
 
     private fun updatePerformanceProfile(frameDelta: Float) {
