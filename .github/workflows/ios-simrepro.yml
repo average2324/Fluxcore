@@ -14,6 +14,7 @@ permissions:
 jobs:
   sim-repro:
     runs-on: macos-26
+    timeout-minutes: 40
     env:
       GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8"
       IOS_SKIP_SIGNING: "true"
@@ -39,18 +40,28 @@ jobs:
           echo "----- patched launcher -----"
           cat "$F"
 
-      - name: List available simulators
-        run: xcrun simctl list devices available | grep -i ipad || true
+      - name: List available simulators and RoboVM tasks
+        run: |
+          xcrun simctl list devices available | grep -i ipad || true
+          echo "----- robovm/ios launch tasks -----"
+          ./gradlew --no-daemon :ios:tasks --all 2>/dev/null | grep -iE "launch|simulator|robovm" || true
 
       - name: Build and launch in the iPad simulator
         run: |
           set -uo pipefail
-          # RoboVM launch task attaches the app console; an uncaught exception
-          # prints its stack trace here. autoExitSeconds quits cleanly if no crash.
-          timeout 600 ./gradlew --no-daemon --no-configuration-cache --stacktrace --info \
-            :ios:launchIPadSimulator 2>&1 | tee sim-console.log || true
+          # No GNU `timeout` on macOS; use a background watchdog. The app self-exits
+          # after autoExitSeconds, so the launch normally returns on its own; the
+          # watchdog only fires if it hangs. An uncaught exception prints its full
+          # stack to this console (captured via tee).
+          ( ./gradlew --no-daemon --no-configuration-cache --stacktrace --info \
+              :ios:launchIPadSimulator 2>&1 | tee sim-console.log ) &
+          GPID=$!
+          ( sleep 1500; kill -9 $GPID 2>/dev/null ) &
+          WPID=$!
+          wait $GPID || true
+          kill $WPID 2>/dev/null || true
           echo "===== EXCEPTION / STACK LINES ====="
-          grep -nE "Exception|Error|Caused by|at com\.|at java|NullPointer|IndexOutOfBounds|IllegalState|IllegalArgument|UnsatisfiedLink|NoClassDefFound|NoSuchMethod|FATAL|Terminating|signal" sim-console.log | head -80 || echo "(no exception lines matched)"
+          grep -nE "Exception|Error|Caused by|at com\.|at java|at org\.robovm|NullPointer|IndexOutOfBounds|IllegalState|IllegalArgument|UnsatisfiedLink|NoClassDefFound|NoSuchMethod|ClassNotFound|FATAL|Terminating|signal|Thread-" sim-console.log | head -120 || echo "(no exception lines matched)"
 
       - name: Upload full console log
         if: always()
