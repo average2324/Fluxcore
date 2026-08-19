@@ -423,9 +423,11 @@ class PatternGenerator(
     }
 
     private fun templateWeightForLevel(template: PatternTemplate): Float {
-        val moduloBand = Math.floorMod(template.id.hashCode() xor (levelConfig.index * 110351524), 7)
+        // Use Kotlin stdlib Int.mod (compiled into bytecode) instead of java.lang.Math.floorMod,
+        // which RoboVM's iOS runtime does not implement (NoSuchMethodError → crash on run start).
+        val moduloBand = (template.id.hashCode() xor (levelConfig.index * 110351524)).mod(7)
         val levelBand = (levelConfig.index + levelSlot) % 7
-        val bandAffinity = when (Math.floorMod(moduloBand - levelBand, 7)) {
+        val bandAffinity = when ((moduloBand - levelBand).mod(7)) {
             0 -> 1.8f
             1, 6 -> 1.35f
             2, 5 -> 1.08f
