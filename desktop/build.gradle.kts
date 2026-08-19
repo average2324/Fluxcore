@@ -45,6 +45,15 @@ val smallScreenRun by tasks.registering(JavaExec::class) {
     workingDir = rootProject.file("assets")
 }
 
+val shipPreview by tasks.registering(JavaExec::class) {
+    group = "application"
+    description = "Renders all 11 procedural ships into ship_preview.png for visual review."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("com.luminadigitale.fluxcore.desktop.DesktopShipPreviewKt")
+    args(rootProject.file("ship_preview.png").absolutePath)
+    workingDir = rootProject.file("assets")
+}
+
 tasks.test {
     useJUnitPlatform()
 }
