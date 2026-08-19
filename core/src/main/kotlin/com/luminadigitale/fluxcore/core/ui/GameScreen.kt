@@ -5829,7 +5829,9 @@ class GameScreen(
         metaFont.draw(batch, blockAreaLabel, centeredX(blockAreaLabel, metaFont), panel.y + panel.height - sy(194f))
         batch.end()
 
-        drawGlassPanel(blockContainer, palette, accent = false)
+        // The block container is no longer drawn as its own glass panel: it nested a second
+        // container inside the main panel (each block already has its own frame). The rect is
+        // still used for scroll bounds and the scrollbar below.
         drawButton(levelSelectBackRect(), t("BACK", "GERİ"), chromeInk)
         val startEnabled = isLevelUnlocked(selectedLevelIndex)
         drawButton(
@@ -6585,6 +6587,9 @@ class GameScreen(
         fontLayout.setText(textFont, fitted)
         val x = pixelSnap(rect.x + (rect.width - fontLayout.width) * 0.5f)
         val y = pixelSnap(rect.y + rect.height * 0.5f + textFont.capHeight * 0.5f - textFont.descent * 0.35f)
+        // Soft shadow keeps the label readable where it crosses a lighter part of the button.
+        textFont.color = Color(0f, 0f, 0f, 0.42f)
+        textFont.draw(batch, fitted, x + 1.5f, y - 1.5f)
         textFont.color = textColor
         textFont.draw(batch, fitted, x, y)
     }
@@ -10017,30 +10022,34 @@ class GameScreen(
     }
 
     private fun drawShieldIcon(cx: Float, cy: Float, scale: Float, color: Color) {
-        val w = (24f * scale).coerceAtLeast(10f)
-        val h = (30f * scale).coerceAtLeast(12f)
-        val top = cy + h * 0.48f
-        val bottom = cy - h * 0.52f
+        val w = (26f * scale).coerceAtLeast(10f)
+        val h = (32f * scale).coerceAtLeast(12f)
+        fun shield(sw: Float, sh: Float): FloatArray = floatArrayOf(
+            cx - sw * 0.5f, cy + sh * 0.48f,
+            cx + sw * 0.5f, cy + sh * 0.48f,
+            cx + sw * 0.46f, cy + sh * 0.06f,
+            cx, cy - sh * 0.54f,
+            cx - sw * 0.46f, cy + sh * 0.06f
+        )
+        // dark outline, body, top sheen
+        shapes.color = Color(0.05f, 0.09f, 0.16f, 0.95f)
+        drawConvexPolygon(shield(w + 4f * scale, h + 4f * scale))
         shapes.color = color
+        drawConvexPolygon(shield(w, h))
+        shapes.color = Color(1f, 1f, 1f, 0.26f)
         drawConvexPolygon(
             floatArrayOf(
-                cx - w * 0.5f, top,
-                cx + w * 0.5f, top,
-                cx + w * 0.46f, cy + h * 0.06f,
-                cx, bottom,
-                cx - w * 0.46f, cy + h * 0.06f
+                cx - w * 0.42f, cy + h * 0.44f,
+                cx + w * 0.42f, cy + h * 0.44f,
+                cx + w * 0.3f, cy + h * 0.12f,
+                cx - w * 0.3f, cy + h * 0.12f
             )
         )
-        shapes.color = Color(1f, 1f, 1f, 0.24f)
-        drawConvexPolygon(
-            floatArrayOf(
-                cx - w * 0.32f, cy + h * 0.22f,
-                cx + w * 0.32f, cy + h * 0.22f,
-                cx + w * 0.22f, cy - h * 0.04f,
-                cx, cy - h * 0.26f,
-                cx - w * 0.22f, cy - h * 0.04f
-            )
-        )
+        // check emblem
+        val t = (w * 0.15f).coerceAtLeast(2f)
+        shapes.color = Color(1f, 1f, 1f, 0.92f)
+        shapes.rectLine(cx - w * 0.22f, cy + h * 0.02f, cx - w * 0.04f, cy - h * 0.16f, t)
+        shapes.rectLine(cx - w * 0.04f, cy - h * 0.16f, cx + w * 0.26f, cy + h * 0.16f, t)
     }
 
     private fun drawCoinIcon(cx: Float, cy: Float, scale: Float) {
@@ -10088,17 +10097,30 @@ class GameScreen(
                 cx - w * 0.5f, bottom
             )
         )
+        // amber sand: a pile settled in the bottom bulb + a thin falling stream
+        val sand = Color(1f, 0.82f, 0.42f, 0.96f)
+        shapes.color = sand
+        drawConvexPolygon(
+            floatArrayOf(
+                cx - w * 0.42f, bottom + h * 0.04f,
+                cx + w * 0.42f, bottom + h * 0.04f,
+                cx, cy - neck * 2.4f
+            )
+        )
+        shapes.rectLine(cx, cy + neck, cx, cy - neck, (w * 0.14f).coerceAtLeast(1f))
+        // remaining sand in the top bulb
+        shapes.color = Color(sand.r, sand.g, sand.b, 0.72f)
+        drawConvexPolygon(
+            floatArrayOf(
+                cx - w * 0.16f, cy + neck,
+                cx + w * 0.16f, cy + neck,
+                cx, cy + neck + h * 0.16f
+            )
+        )
+        // glass rims
         shapes.color = purpleBright
         shapes.rectLine(cx - w * 0.5f, top, cx + w * 0.5f, top, (w * 0.2f).coerceAtLeast(1f))
         shapes.rectLine(cx - w * 0.5f, bottom, cx + w * 0.5f, bottom, (w * 0.2f).coerceAtLeast(1f))
-        shapes.color = Color(0.95f, 0.9f, 1f, 0.3f)
-        drawConvexPolygon(
-            floatArrayOf(
-                cx - w * 0.22f, cy + neck * 0.85f,
-                cx + w * 0.22f, cy + neck * 0.85f,
-                cx, cy
-            )
-        )
     }
 
     private fun drawLockIcon(cx: Float, cy: Float, scale: Float, color: Color) {
