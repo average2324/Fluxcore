@@ -49,23 +49,45 @@ jobs:
       - name: Build and launch in the iPad simulator
         run: |
           set -uo pipefail
-          # No GNU `timeout` on macOS; use a background watchdog. The app self-exits
-          # after autoExitSeconds, so the launch normally returns on its own; the
-          # watchdog only fires if it hangs. An uncaught exception prints its full
-          # stack to this console (captured via tee).
-          ( ./gradlew --no-daemon --no-configuration-cache --stacktrace --info \
+          # RoboVM's launch task builds+installs+launches then DETACHES the console,
+          # so it only shows the first init log line. We capture the real runtime
+          # (including any crash) from the simulator's own log afterwards.
+          ( ./gradlew --no-daemon --no-configuration-cache --stacktrace \
               :ios:launchIPadSimulator 2>&1 | tee sim-console.log ) &
           GPID=$!
           ( sleep 1500; kill -9 $GPID 2>/dev/null ) &
           WPID=$!
           wait $GPID || true
           kill $WPID 2>/dev/null || true
-          echo "===== EXCEPTION / STACK LINES ====="
-          grep -nE "Exception|Error|Caused by|at com\.|at java|at org\.robovm|NullPointer|IndexOutOfBounds|IllegalState|IllegalArgument|UnsatisfiedLink|NoClassDefFound|NoSuchMethod|ClassNotFound|FATAL|Terminating|signal|Thread-" sim-console.log | head -120 || echo "(no exception lines matched)"
+          echo "===== letting the app run / crash ====="
+          sleep 20
+
+      - name: Capture simulator log and crash report
+        if: always()
+        run: |
+          set +e
+          echo "===== FluxCore process log (last 5 min) ====="
+          xcrun simctl spawn booted log show --last 5m --style compact \
+            --predicate 'process == "FluxCore"' 2>/dev/null | tail -250 | tee applog.txt
+          echo
+          echo "===== crash reports (.ips / .crash) ====="
+          CR=$(find "$HOME/Library/Logs/DiagnosticReports" \
+                    "$HOME/Library/Developer/CoreSimulator/Devices" \
+                    -iname 'FluxCore*' \( -name '*.ips' -o -name '*.crash' \) 2>/dev/null)
+          if [ -z "$CR" ]; then
+            echo "(no FluxCore crash report found)"
+          else
+            for f in $CR; do echo "----------- $f -----------"; cat "$f"; echo; done | tee crash.txt
+          fi
+          echo "===== exception lines across captures ====="
+          grep -aE "Exception|Error|Caused by|at com\.luminadigitale|at java|at org\.robovm|NullPointer|IndexOutOfBounds|IllegalState|UnsatisfiedLink|NoClassDefFound|NoSuchMethod|ClassNotFound|EXC_|SIGSEGV|SIGABRT|Terminating|Fatal" sim-console.log applog.txt crash.txt 2>/dev/null | head -120 || echo "(none)"
 
       - name: Upload full console log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: sim-console
-          path: sim-console.log
+          path: |
+            sim-console.log
+            applog.txt
+            crash.txt
