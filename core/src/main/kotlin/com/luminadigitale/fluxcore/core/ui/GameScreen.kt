@@ -3497,21 +3497,97 @@ class GameScreen(
             return
         }
         val miniMultiplier = if (levelIndex in 31..40) 0.62f else 1f
-        drawCodeShipModel(
-            centerX = shipX,
-            centerY = shipY,
-            angleRad = angleRad,
-            yScale = yScale,
-            modelScale = (arenaRadiusPixels * 0.00132f * miniMultiplier).coerceIn(0.15f, 0.42f),
-            levelIndex = levelIndex,
-            palette = palette,
-            phaseActive = phaseActive,
-            dimmed = false,
-            shipStyleIndex = shipStyleIndex
-        )
+        // On the non-themed level ranges the flown ship is the ship chosen in the store,
+        // drawn from its ShipArt texture (themed ranges above keep their special models).
+        val storeShipTex = activeShipSkin()?.texture
+        if (storeShipTex != null) {
+            val shipLen = (arenaRadiusPixels * 0.2f * miniMultiplier).coerceIn(sx(30f), sx(120f))
+            drawShipThruster(shipX, shipY, angleRad, shipLen, shipStyleIndex)
+            drawShipSprite(storeShipTex, shipX, shipY, shipLen, angleRad * MathUtils.radiansToDegrees - 90f)
+        } else {
+            drawCodeShipModel(
+                centerX = shipX,
+                centerY = shipY,
+                angleRad = angleRad,
+                yScale = yScale,
+                modelScale = (arenaRadiusPixels * 0.00132f * miniMultiplier).coerceIn(0.15f, 0.42f),
+                levelIndex = levelIndex,
+                palette = palette,
+                phaseActive = phaseActive,
+                dimmed = false,
+                shipStyleIndex = shipStyleIndex
+            )
+        }
         if (shieldVisualActive) {
             drawShipShieldBubble(shipX, shipY, arenaRadiusPixels, yScale)
         }
+    }
+
+    private fun drawShipThruster(cx: Float, cy: Float, angleRad: Float, lengthPx: Float, styleIndex: Int) {
+        // Animated exhaust flame from the tail (opposite the nose), tinted per ship so each
+        // one has its own trail. Drawn before the hull sprite so it sits behind the ship.
+        val dirX = cos(angleRad)
+        val dirY = sin(angleRad)
+        val perpX = -dirY
+        val perpY = dirX
+        val tailX = cx - dirX * lengthPx * 0.40f
+        val tailY = cy - dirY * lengthPx * 0.40f
+        val flicker = 0.72f + 0.22f * sin(worldTime * 27f + cx * 0.05f) + 0.1f * sin(worldTime * 61f)
+        val flameLen = lengthPx * 0.6f * flicker
+        val baseHalf = lengthPx * 0.17f
+        val tint = shipTierCoreNeon[styleIndex.coerceAtLeast(0) % shipTierCoreNeon.size]
+
+        shapes.projectionMatrix = camera.combined
+        shapes.begin(ShapeRenderer.ShapeType.Filled)
+        // outer warm plume
+        shapes.color = Color(1f, 0.5f, 0.16f, 0.62f)
+        shapes.triangle(
+            tailX + perpX * baseHalf, tailY + perpY * baseHalf,
+            tailX - perpX * baseHalf, tailY - perpY * baseHalf,
+            tailX - dirX * flameLen, tailY - dirY * flameLen
+        )
+        // mid flame tinted by the ship colour
+        shapes.color = Color(tint.r, tint.g, tint.b, 0.8f)
+        shapes.triangle(
+            tailX + perpX * baseHalf * 0.62f, tailY + perpY * baseHalf * 0.62f,
+            tailX - perpX * baseHalf * 0.62f, tailY - perpY * baseHalf * 0.62f,
+            tailX - dirX * flameLen * 0.72f, tailY - dirY * flameLen * 0.72f
+        )
+        // hot white core
+        shapes.color = Color(1f, 1f, 1f, 0.9f)
+        shapes.triangle(
+            tailX + perpX * baseHalf * 0.3f, tailY + perpY * baseHalf * 0.3f,
+            tailX - perpX * baseHalf * 0.3f, tailY - perpY * baseHalf * 0.3f,
+            tailX - dirX * flameLen * 0.42f, tailY - dirY * flameLen * 0.42f
+        )
+        shapes.end()
+    }
+
+    private fun drawShipSprite(tex: Texture, cx: Float, cy: Float, lengthPx: Float, rotationDeg: Float) {
+        val drawH = lengthPx
+        val drawW = lengthPx * (tex.width.toFloat() / tex.height.toFloat())
+        batch.projectionMatrix = camera.combined
+        batch.begin()
+        batch.setColor(1f, 1f, 1f, 1f)
+        batch.draw(
+            tex,
+            cx - drawW * 0.5f,
+            cy - drawH * 0.5f,
+            drawW * 0.5f,
+            drawH * 0.5f,
+            drawW,
+            drawH,
+            1f,
+            1f,
+            rotationDeg,
+            0,
+            0,
+            tex.width,
+            tex.height,
+            false,
+            false
+        )
+        batch.end()
     }
 
     private fun drawShipShieldBubble(centerX: Float, centerY: Float, arenaRadiusPixels: Float, yScale: Float) {
@@ -8781,7 +8857,9 @@ class GameScreen(
     private fun pauseCardRect(): UiRect {
         val sidePad = sx(60f).coerceIn(32f, 72f)
         val width = centeredPanelWidth(sidePad, minWidth = 460f, maxWidth = 760f)
-        val height = sy(620f).coerceIn(sy(520f), sy(760f))
+        // Sized to fit title + 4 action buttons on wide (iPad) aspects, where sy≈1 made
+        // the old 620 height too short and the last button spilled below the card.
+        val height = sy(664f).coerceIn(sy(560f), sy(780f))
         return UiRect(
             x = centeredPanelX(width),
             y = viewport.worldHeight * 0.5f - height * 0.5f,
@@ -8793,9 +8871,9 @@ class GameScreen(
     private fun pauseActionRect(slot: Int): UiRect {
         val card = pauseCardRect()
         val width = card.width - sx(90f)
-        val height = sy(98f).coerceIn(82f, 112f)
-        val topInset = sy(198f).coerceIn(158f, 224f)
-        val gap = sy(20f).coerceIn(12f, 28f)
+        val height = sy(92f).coerceIn(78f, 108f)
+        val topInset = sy(152f).coerceIn(122f, 196f)
+        val gap = sy(16f).coerceIn(12f, 24f)
         val startY = card.y + card.height - topInset - height
         return UiRect(
             x = card.x + sx(45f),
