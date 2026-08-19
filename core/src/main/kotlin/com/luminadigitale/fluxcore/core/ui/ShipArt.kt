@@ -4,151 +4,177 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 
 /**
- * Original, procedurally drawn ship art. Each of the 11 ships is a distinct hull + wing +
- * tail silhouette, drawn as a flat mask and then shaded with a top-lit vertical gradient and
- * a clean edge outline so it reads as a solid vehicle rather than thin placeholder lines.
- *
- * Everything here is generated in code — no bundled ship images — which keeps the app free of
- * shared third-party raster assets. Shared by the in-game store and the desktop preview tool.
+ * Original, procedurally drawn ship art for the hangar/store. Each of the 11 ships is drawn
+ * nose-up as a distinct solid silhouette — different hull, wing planform and tail — then
+ * side-lit with a vertical metallic gradient and a clean edge outline, plus a canopy and
+ * engine glow. Everything is generated in code; no bundled ship images, so the app stays
+ * free of shared third-party raster assets.
  */
 object ShipArt {
-    const val WIDTH = 192
-    const val HEIGHT = 128
+    const val WIDTH = 128
+    const val HEIGHT = 192
+    private const val MID_X = 64
 
     private val corePalette = listOf(
-        "2DF8FF", "63EDFF", "79FF63", "FFC34D", "FF6A9D", "7AB0FF",
-        "6CFFEA", "E3FF78", "FF9E6C", "FF8FF1", "9BB8FF"
+        "2DF8FF", "63A6FF", "79FF63", "FFC34D", "FF6A9D", "7AB0FF",
+        "6CFFEA", "C6FF4D", "FF9E6C", "FF8FF1", "9BB8FF"
     ).map { Color.valueOf(it) }
 
     private val accentPalette = listOf(
-        "D8FBFF", "FFE0C1", "D6FFE3", "FFF4D3", "FFDCEB", "E7EEFF",
+        "D8FBFF", "E7EEFF", "D6FFE3", "FFF4D3", "FFDCEB", "E7EEFF",
         "D6FFF9", "F5FFD7", "FFE7DA", "F5DFFF", "EAF1FF"
     ).map { Color.valueOf(it) }
 
-    private data class ShipForm(
-        val noseX: Int,
-        val tailX: Int,
-        val bodyHalf: Int,
-        val wRootX: Int,
-        val wTipX: Int,
-        val wSpan: Int,
-        val wThick: Int,
-        val canardX: Int,
-        val canardSpan: Int,
-        val twinTail: Boolean,
-        val tailFinSpan: Int
-    )
-
-    private val shipForms = listOf(
-        ShipForm(184, 36, 12, 118, 66, 30, 10, 0, 0, false, 18), // 0 dart interceptor (default)
-        ShipForm(176, 40, 13, 128, 44, 46, 8, 0, 0, false, 16), // 1 wide delta
-        ShipForm(190, 44, 9, 120, 84, 20, 6, 150, 14, false, 12), // 2 ion lancer (needle + canard)
-        ShipForm(178, 40, 12, 96, 132, 34, 9, 0, 0, false, 20), // 3 ember wing (forward-swept)
-        ShipForm(172, 34, 14, 132, 70, 26, 12, 0, 0, true, 30), // 4 vortex tail (twin fins)
-        ShipForm(174, 44, 11, 120, 72, 44, 7, 0, 0, false, 14), // 5 pulse hawk (broad spread)
-        ShipForm(188, 46, 7, 110, 80, 16, 5, 0, 0, false, 22), // 6 aether blade (thin sharp)
-        ShipForm(168, 36, 16, 140, 52, 52, 10, 0, 0, false, 12), // 7 zenith ray (wide manta)
-        ShipForm(178, 30, 11, 116, 74, 28, 9, 0, 0, true, 24), // 8 rift runner (split tail)
-        ShipForm(166, 34, 18, 120, 78, 30, 14, 96, 20, false, 16), // 9 gravity falcon (bulky + canard)
-        ShipForm(182, 32, 15, 128, 66, 40, 12, 104, 22, true, 26) // 10 orion prime (flagship)
-    )
-
     /** Caller owns the returned Pixmap and must dispose it. */
     fun buildShipPixmap(index: Int): Pixmap {
-        val width = WIDTH
-        val height = HEIGHT
-        val midY = height / 2
-        val pixmap = Pixmap(width, height, Pixmap.Format.RGBA8888)
-        pixmap.setColor(0f, 0f, 0f, 0f)
-        pixmap.fill()
+        val pm = Pixmap(WIDTH, HEIGHT, Pixmap.Format.RGBA8888)
+        pm.setColor(0f, 0f, 0f, 0f)
+        pm.fill()
 
-        val core = corePalette[index.coerceIn(0, corePalette.lastIndex)]
-        val accent = accentPalette[index.coerceIn(0, accentPalette.lastIndex)]
-        val outlineColor = Color(0.04f, 0.07f, 0.13f, 1f)
-        val form = shipForms[index.coerceIn(0, shipForms.lastIndex)]
+        val i = index.coerceIn(0, 10)
+        val core = corePalette[i]
+        val accent = accentPalette[i]
+        val outline = Color(0.04f, 0.07f, 0.13f, 1f)
 
-        pixmap.setBlending(Pixmap.Blending.None)
-        pixmap.setColor(core)
+        pm.setBlending(Pixmap.Blending.None)
+        pm.setColor(core)
 
-        // Body: pointed nose tapering to a squared tail, with a slight belly for volume.
-        val midBodyX = (form.noseX + form.tailX) / 2
-        pixmap.fillTriangle(form.noseX, midY, form.tailX, midY - form.bodyHalf, form.tailX, midY + form.bodyHalf)
-        pixmap.fillTriangle(form.noseX, midY, midBodyX, midY - form.bodyHalf - 2, form.tailX, midY - form.bodyHalf)
-        pixmap.fillTriangle(form.noseX, midY, midBodyX, midY + form.bodyHalf + 2, form.tailX, midY + form.bodyHalf)
-
-        // Main wings (top + mirrored bottom). tipX > rootX sweeps them forward.
-        pixmap.fillTriangle(form.wRootX, midY - 2, form.wTipX, midY - form.wSpan, form.wRootX - form.wThick, midY - 2)
-        pixmap.fillTriangle(form.wRootX, midY + 2, form.wTipX, midY + form.wSpan, form.wRootX - form.wThick, midY + 2)
-
-        // Optional forward canards.
-        if (form.canardSpan > 0) {
-            pixmap.fillTriangle(form.canardX, midY - 2, form.canardX - 14, midY - form.canardSpan, form.canardX - 18, midY - 2)
-            pixmap.fillTriangle(form.canardX, midY + 2, form.canardX - 14, midY + form.canardSpan, form.canardX - 18, midY + 2)
+        // Filled triangle + quad helpers, with an X-mirror so ships stay symmetric.
+        fun tri(ax: Int, ay: Int, bx: Int, by: Int, cx: Int, cy: Int) = pm.fillTriangle(ax, ay, bx, by, cx, cy)
+        fun quad(ax: Int, ay: Int, bx: Int, by: Int, cx: Int, cy: Int, dx: Int, dy: Int) {
+            tri(ax, ay, bx, by, cx, cy)
+            tri(ax, ay, cx, cy, dx, dy)
+        }
+        fun m(x: Int) = 2 * MID_X - x
+        // Wing as a 4-point plate on the right side + mirror. (rx=root x, tx=tip x, y's top/bottom.)
+        fun wing(rxTop: Int, ryTop: Int, txTop: Int, tyTop: Int, txBot: Int, tyBot: Int, rxBot: Int, ryBot: Int) {
+            quad(rxTop, ryTop, txTop, tyTop, txBot, tyBot, rxBot, ryBot)
+            quad(m(rxTop), ryTop, m(txTop), tyTop, m(txBot), tyBot, m(rxBot), ryBot)
+        }
+        // Central body spanning nose (top) to tail (bottom); halfTop/halfMid/halfTail = half widths.
+        fun body(noseY: Int, midY: Int, tailY: Int, halfMid: Int, halfTail: Int) {
+            tri(MID_X, noseY, MID_X - halfMid, midY, MID_X + halfMid, midY)
+            quad(MID_X - halfMid, midY, MID_X + halfMid, midY, MID_X + halfTail, tailY, MID_X - halfTail, tailY)
         }
 
-        // Tail fins: twin splayed fins or a single stabiliser.
-        if (form.twinTail) {
-            pixmap.fillTriangle(form.tailX + 18, midY - 3, form.tailX - 6, midY - form.tailFinSpan, form.tailX + 4, midY - 3)
-            pixmap.fillTriangle(form.tailX + 18, midY + 3, form.tailX - 6, midY + form.tailFinSpan, form.tailX + 4, midY + 3)
-        } else {
-            pixmap.fillTriangle(form.tailX + 20, midY, form.tailX - 2, midY - form.tailFinSpan, form.tailX + 6, midY)
-            pixmap.fillTriangle(form.tailX + 20, midY, form.tailX - 2, midY + form.tailFinSpan, form.tailX + 6, midY)
+        when (i) {
+            0 -> { // Specter-7 — sleek interceptor, thin swept wings, small V-tail
+                body(16, 96, 168, 12, 8)
+                wing(54, 92, 22, 150, 34, 150, 56, 108)
+                tri(MID_X, 176, MID_X - 16, 158, MID_X - 4, 158)
+                tri(MID_X, 176, MID_X + 16, 158, MID_X + 4, 158)
+            }
+            1 -> { // Nova Arc — broad delta wing
+                body(14, 60, 170, 10, 14)
+                wing(54, 70, 8, 168, 30, 168, 54, 120)
+                quad(MID_X - 14, 168, MID_X + 14, 168, MID_X + 8, 182, MID_X - 8, 182)
+            }
+            2 -> { // Ion Lancer — long needle, tiny wings, long spike
+                tri(MID_X, 8, MID_X - 6, 60, MID_X + 6, 60)
+                body(52, 92, 166, 8, 6)
+                wing(50, 104, 30, 138, 40, 138, 52, 118)
+                tri(MID_X, 176, MID_X - 8, 160, MID_X + 8, 160)
+            }
+            3 -> { // Ember Wing — thick forward-swept wings
+                body(16, 92, 168, 13, 9)
+                wing(52, 132, 20, 96, 40, 108, 54, 116)
+                wing(54, 150, 26, 176, 44, 176, 56, 150)
+            }
+            4 -> { // Vortex Tail — medium wings, wide curved twin tail
+                body(16, 90, 156, 12, 10)
+                wing(52, 96, 26, 140, 38, 144, 54, 112)
+                quad(MID_X - 10, 150, MID_X - 4, 150, MID_X - 30, 184, MID_X - 22, 178)
+                quad(MID_X + 10, 150, MID_X + 4, 150, MID_X + 30, 184, MID_X + 22, 178)
+            }
+            5 -> { // Pulse Hawk — broad spread wings, forked tail
+                body(16, 84, 158, 11, 9)
+                wing(52, 78, 6, 118, 26, 128, 54, 104)
+                tri(MID_X - 4, 156, MID_X - 20, 184, MID_X - 8, 176)
+                tri(MID_X + 4, 156, MID_X + 20, 184, MID_X + 8, 176)
+                quad(MID_X - 4, 150, MID_X + 4, 150, MID_X + 3, 176, MID_X - 3, 176)
+            }
+            6 -> { // Aether Blade — thin sharp blade, minimal straight wings
+                body(10, 100, 172, 8, 5)
+                wing(52, 118, 40, 96, 46, 100, 54, 128)
+                tri(MID_X, 178, MID_X - 6, 162, MID_X + 6, 162)
+            }
+            7 -> { // Zenith Ray — wide flat manta, wings merge with body, no tail
+                tri(MID_X, 20, MID_X - 52, 150, MID_X + 52, 150)
+                quad(MID_X - 52, 150, MID_X + 52, 150, MID_X + 20, 172, MID_X - 20, 172)
+                tri(MID_X, 40, MID_X - 12, 150, MID_X + 12, 150)
+            }
+            8 -> { // Rift Runner — chunky angular hull, straight wings, split tail
+                body(16, 88, 150, 14, 11)
+                wing(54, 92, 40, 78, 48, 84, 56, 118)
+                quad(MID_X - 12, 148, MID_X - 2, 148, MID_X - 10, 184, MID_X - 20, 184)
+                quad(MID_X + 12, 148, MID_X + 2, 148, MID_X + 10, 184, MID_X + 20, 184)
+            }
+            9 -> { // Gravity Falcon — heavy wide cruiser, thick short wings, big single tail
+                body(18, 84, 158, 18, 14)
+                wing(60, 92, 36, 120, 48, 128, 62, 116)
+                quad(MID_X - 8, 150, MID_X + 8, 150, MID_X + 14, 186, MID_X - 14, 186)
+            }
+            else -> { // Orion Prime — flagship: canards + main wings + twin tail
+                body(14, 88, 160, 15, 11)
+                wing(52, 60, 34, 40, 42, 48, 54, 74) // canards
+                wing(58, 104, 20, 150, 38, 154, 60, 124) // main wings
+                quad(MID_X - 11, 156, MID_X - 2, 156, MID_X - 8, 188, MID_X - 18, 186)
+                quad(MID_X + 11, 156, MID_X + 2, 156, MID_X + 8, 188, MID_X + 18, 186)
+            }
         }
 
-        // --- Shading + outline pass (the actual polish) ---
-        val opaque = BooleanArray(width * height)
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                opaque[y * width + x] = (pixmap.getPixel(x, y) and 0xFF) > 12
+        // --- Side-lit shading + edge outline (per row: left highlight, right shadow) ---
+        val opaque = BooleanArray(WIDTH * HEIGHT)
+        for (y in 0 until HEIGHT) {
+            for (x in 0 until WIDTH) {
+                opaque[y * WIDTH + x] = (pm.getPixel(x, y) and 0xFF) > 12
             }
         }
         val shade = Color()
-        for (x in 0 until width) {
-            var top = -1
-            var bottom = -1
-            for (y in 0 until height) {
-                if (opaque[y * width + x]) {
-                    if (top < 0) top = y
-                    bottom = y
+        for (y in 0 until HEIGHT) {
+            var left = -1
+            var right = -1
+            for (x in 0 until WIDTH) {
+                if (opaque[y * WIDTH + x]) {
+                    if (left < 0) left = x
+                    right = x
                 }
             }
-            if (top < 0) continue
-            val span = (bottom - top).coerceAtLeast(1).toFloat()
-            for (y in top..bottom) {
-                if (!opaque[y * width + x]) continue
-                val t = (y - top) / span
+            if (left < 0) continue
+            val span = (right - left).coerceAtLeast(1).toFloat()
+            for (x in left..right) {
+                if (!opaque[y * WIDTH + x]) continue
+                val t = (x - left) / span
                 shade.set(core)
-                if (t < 0.30f) {
-                    shade.lerp(Color.WHITE, (0.30f - t) / 0.30f * 0.55f)
+                if (t < 0.42f) {
+                    shade.lerp(Color.WHITE, (0.42f - t) / 0.42f * 0.5f)
                 } else {
-                    shade.lerp(outlineColor, (t - 0.30f) / 0.70f * 0.5f)
+                    shade.lerp(outline, (t - 0.42f) / 0.58f * 0.55f)
                 }
-                val edge = !opaque[y * width + (x - 1).coerceAtLeast(0)] ||
-                    !opaque[y * width + (x + 1).coerceAtMost(width - 1)] ||
-                    !opaque[(y - 1).coerceAtLeast(0) * width + x] ||
-                    !opaque[(y + 1).coerceAtMost(height - 1) * width + x]
-                if (edge) shade.lerp(outlineColor, 0.72f)
-                pixmap.drawPixel(x, y, Color.rgba8888(shade))
+                val edge = !opaque[y * WIDTH + (x - 1).coerceAtLeast(0)] ||
+                    !opaque[y * WIDTH + (x + 1).coerceAtMost(WIDTH - 1)] ||
+                    !opaque[(y - 1).coerceAtLeast(0) * WIDTH + x] ||
+                    !opaque[(y + 1).coerceAtMost(HEIGHT - 1) * WIDTH + x]
+                if (edge) shade.lerp(outline, 0.7f)
+                pm.drawPixel(x, y, Color.rgba8888(shade))
             }
         }
 
-        // --- Canopy, engine glow and nose spark, drawn over the shaded hull ---
-        pixmap.setBlending(Pixmap.Blending.SourceOver)
-        val canopyX = (form.noseX * 0.60f + form.tailX * 0.40f).toInt()
-        val canopyR = (form.bodyHalf * 0.55f).toInt().coerceAtLeast(4)
-        pixmap.setColor(accent.r, accent.g, accent.b, 0.95f)
-        pixmap.fillCircle(canopyX, midY, canopyR)
-        pixmap.setColor(1f, 1f, 1f, 0.85f)
-        pixmap.fillCircle(canopyX + 2, midY - 1, (canopyR * 0.5f).toInt().coerceAtLeast(2))
+        // --- Canopy near the nose, engine glow at the tail, nose spark ---
+        pm.setBlending(Pixmap.Blending.SourceOver)
+        pm.setColor(accent.r, accent.g, accent.b, 0.95f)
+        pm.fillCircle(MID_X, 70, 9)
+        pm.setColor(1f, 1f, 1f, 0.85f)
+        pm.fillCircle(MID_X - 2, 66, 4)
         for (k in 0..3) {
-            val glowR = (form.bodyHalf * 0.65f).toInt().coerceAtLeast(3) - k
-            if (glowR <= 0) continue
-            pixmap.setColor(accent.r, accent.g, accent.b, 0.5f - k * 0.11f)
-            pixmap.fillCircle(form.tailX - k * 3, midY, glowR)
+            val r = 8 - k
+            if (r <= 0) continue
+            pm.setColor(accent.r, accent.g, accent.b, 0.5f - k * 0.11f)
+            pm.fillCircle(MID_X, 168 + k * 3, r)
         }
-        pixmap.setColor(1f, 1f, 1f, 0.9f)
-        pixmap.fillCircle(form.noseX - 4, midY, 2)
+        pm.setColor(1f, 1f, 1f, 0.9f)
+        pm.fillCircle(MID_X, 20, 2)
 
-        return pixmap
+        return pm
     }
 }

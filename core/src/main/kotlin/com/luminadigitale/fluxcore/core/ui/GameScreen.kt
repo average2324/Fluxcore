@@ -3860,6 +3860,46 @@ class GameScreen(
         rotationDeg: Float,
         dimmed: Boolean
     ) {
+        val tex = skin?.texture
+        if (tex != null) {
+            // Draw the actual ShipArt hull, horizontal (nose right), fit into the card so
+            // each ship's distinct silhouette is readable. Falls back to the vector icon
+            // only if a skin somehow has no texture.
+            val aspect = tex.width.toFloat() / tex.height.toFloat()
+            var drawW = rect.width * 1.24f
+            var drawH = drawW / aspect
+            val maxH = rect.height * 1.18f
+            if (drawH > maxH) {
+                drawH = maxH
+                drawW = drawH * aspect
+            }
+            val cx = rect.x + rect.width * 0.5f
+            val cy = rect.y + rect.height * 0.5f
+            batch.projectionMatrix = camera.combined
+            batch.begin()
+            if (dimmed) batch.setColor(1f, 1f, 1f, 0.42f) else batch.setColor(1f, 1f, 1f, 1f)
+            batch.draw(
+                tex,
+                cx - drawW * 0.5f,
+                cy - drawH * 0.5f,
+                drawW * 0.5f,
+                drawH * 0.5f,
+                drawW,
+                drawH,
+                1f,
+                1f,
+                0f,
+                0,
+                0,
+                tex.width,
+                tex.height,
+                false,
+                false
+            )
+            batch.setColor(1f, 1f, 1f, 1f)
+            batch.end()
+            return
+        }
         val styleIndex = shipStyleIndexForSkin(skin)
         drawShipPreviewIcon(
             rect = rect,
