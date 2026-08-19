@@ -1,0 +1,60 @@
+name: iOS Sim Crash Repro
+
+# Device-free reproduction of the 2.1(a) "app closed on start" crash.
+# Runs the app in the iOS Simulator with simulation mode on so it auto-drives
+# into a run, and captures the RoboVM console — an uncaught exception prints its
+# full stack trace there, which is what we need to fix the crash.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sim-repro:
+    runs-on: macos-26
+    env:
+      GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m -Dfile.encoding=UTF-8"
+      IOS_SKIP_SIGNING: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Enable simulation auto-play in the launcher (repro only)
+        run: |
+          set -euo pipefail
+          F=ios/src/main/kotlin/com/luminadigitale/fluxcore/ios/IosLauncher.kt
+          sed -i '' 's/            FluxCoreGame(/            FluxCoreGame(\n                autoExitSeconds = 45f,/' "$F"
+          sed -i '' 's/                        adsEnabled = false,/                        adsEnabled = false,\n                        simulationModeEnabled = true,\n                        simulationStartLevel = 0,/' "$F"
+          echo "----- patched launcher -----"
+          cat "$F"
+
+      - name: List available simulators
+        run: xcrun simctl list devices available | grep -i ipad || true
+
+      - name: Build and launch in the iPad simulator
+        run: |
+          set -uo pipefail
+          # RoboVM launch task attaches the app console; an uncaught exception
+          # prints its stack trace here. autoExitSeconds quits cleanly if no crash.
+          timeout 600 ./gradlew --no-daemon --no-configuration-cache --stacktrace --info \
+            :ios:launchIPadSimulator 2>&1 | tee sim-console.log || true
+          echo "===== EXCEPTION / STACK LINES ====="
+          grep -nE "Exception|Error|Caused by|at com\.|at java|NullPointer|IndexOutOfBounds|IllegalState|IllegalArgument|UnsatisfiedLink|NoClassDefFound|NoSuchMethod|FATAL|Terminating|signal" sim-console.log | head -80 || echo "(no exception lines matched)"
+
+      - name: Upload full console log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sim-console
+          path: sim-console.log
