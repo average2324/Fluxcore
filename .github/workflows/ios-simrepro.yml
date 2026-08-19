@@ -39,6 +39,12 @@ jobs:
           sed -i '' 's/                        adsEnabled = false,/                        adsEnabled = false,\n                        simulationModeEnabled = true,\n                        simulationStartLevel = 0,/' "$F"
           echo "----- patched launcher -----"
           cat "$F"
+          # The fresh-install tutorial pause blocks sim auto-play at READY, so disable
+          # the tutorial in the repro so auto-play actually enters RUNNING gameplay.
+          G=core/src/main/kotlin/com/luminadigitale/fluxcore/core/ui/GameScreen.kt
+          sed -i '' 's/tutorialActive = !profilePreferences.getBoolean(STORE_TUTORIAL_DONE_KEY, false)/tutorialActive = false/' "$G"
+          echo "----- tutorial init line after patch -----"
+          grep -n "tutorialActive = " "$G" | head -3
 
       - name: List available simulators and RoboVM tasks
         run: |
