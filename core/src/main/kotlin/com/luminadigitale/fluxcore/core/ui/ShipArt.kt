@@ -160,8 +160,21 @@ object ShipArt {
                     !opaque[y * WIDTH + (x + 1).coerceAtMost(WIDTH - 1)] ||
                     !opaque[(y - 1).coerceAtLeast(0) * WIDTH + x] ||
                     !opaque[(y + 1).coerceAtMost(HEIGHT - 1) * WIDTH + x]
-                if (edge) shade.lerp(outline, 0.7f)
+                when {
+                    edge -> shade.lerp(outline, 0.82f) // crisp dark outline
+                    x == left + 1 -> shade.set(core).lerp(Color.WHITE, 0.78f) // bright lit rim
+                }
                 pm.drawPixel(x, y, Color.rgba8888(shade))
+            }
+        }
+
+        // Bright centre spine ridge down the fuselage for definition (less "doughy").
+        val spineRgba = Color.rgba8888(Color(core).lerp(Color.WHITE, 0.45f))
+        val spineShadeRgba = Color.rgba8888(Color(core).lerp(outline, 0.3f))
+        for (y in 0 until HEIGHT) {
+            if (opaque[y * WIDTH + MID_X]) {
+                pm.drawPixel(MID_X, y, spineRgba)
+                if (opaque[y * WIDTH + MID_X + 1]) pm.drawPixel(MID_X + 1, y, spineShadeRgba)
             }
         }
 

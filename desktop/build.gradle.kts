@@ -45,6 +45,15 @@ val smallScreenRun by tasks.registering(JavaExec::class) {
     workingDir = rootProject.file("assets")
 }
 
+val ipadRun by tasks.registering(JavaExec::class) {
+    group = "application"
+    description = "Runs the desktop app at iPad 11-inch portrait aspect to catch tablet layout overflows (the App Review device)."
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set(application.mainClass)
+    args("--width=820", "--height=1180")
+    workingDir = rootProject.file("assets")
+}
+
 val shipPreview by tasks.registering(JavaExec::class) {
     group = "application"
     description = "Renders all 11 procedural ships into ship_preview.png for visual review."

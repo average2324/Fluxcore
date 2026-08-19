@@ -3865,13 +3865,13 @@ class GameScreen(
             // Draw the actual ShipArt hull, horizontal (nose right), fit into the card so
             // each ship's distinct silhouette is readable. Falls back to the vector icon
             // only if a skin somehow has no texture.
+            // Contain the ship fully inside the card with a small margin (was overflowing).
             val aspect = tex.width.toFloat() / tex.height.toFloat()
-            var drawW = rect.width * 1.24f
-            var drawH = drawW / aspect
-            val maxH = rect.height * 1.18f
-            if (drawH > maxH) {
-                drawH = maxH
-                drawW = drawH * aspect
+            var drawH = rect.height * 0.94f
+            var drawW = drawH * aspect
+            if (drawW > rect.width * 0.94f) {
+                drawW = rect.width * 0.94f
+                drawH = drawW / aspect
             }
             val cx = rect.x + rect.width * 0.5f
             val cy = rect.y + rect.height * 0.5f
