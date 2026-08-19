@@ -66,21 +66,32 @@ jobs:
         if: always()
         run: |
           set +e
-          echo "===== FluxCore process log (last 5 min) ====="
           xcrun simctl spawn booted log show --last 5m --style compact \
-            --predicate 'process == "FluxCore"' 2>/dev/null | tail -250 | tee applog.txt
+            --predicate 'process == "FluxCore"' 2>/dev/null > full.log
+          echo "===== total FluxCore log lines: $(wc -l < full.log) ====="
+          echo
+          echo "===== is the app still alive? (clean=alive after autoExit, crash=gone early) ====="
+          xcrun simctl spawn booted launchctl list 2>/dev/null | grep -i flux || echo "(FluxCore not in launchctl list)"
+          echo
+          echo "===== app-relevant lines (system noise removed), last 200 ====="
+          grep -avE "coreaudio|com\.apple\.UIKit|com\.apple\.xpc|BackgroundTask|PointerLock|AudioSession|RemoteIO|AQME|Workgroup|SpatialMixer|AudioConverter|assertion|Storefront|SKProductsRequest|storekit" full.log \
+            | tee applog.txt | tail -200
+          echo
+          echo "===== error / fault / exception / crash lines ====="
+          grep -aiE "exception|\[error\]|fault|robovm|abort|signal|terminat|uncaught|fatal|EXC_|SIGSEGV|SIGABRT|NullPointer|IndexOutOfBounds|IllegalState|UnsatisfiedLink|NoClassDefFound|ClassNotFound|glGetError|GL_INVALID" full.log \
+            | grep -aviE "coreaudio|AudioConverter" | tee errlines.txt | head -120
+          [ -s errlines.txt ] || echo "(no error/exception lines)"
           echo
           echo "===== crash reports (.ips / .crash) ====="
           CR=$(find "$HOME/Library/Logs/DiagnosticReports" \
-                    "$HOME/Library/Developer/CoreSimulator/Devices" \
-                    -iname 'FluxCore*' \( -name '*.ips' -o -name '*.crash' \) 2>/dev/null)
+                    "$HOME/Library/Developer/CoreSimulator" \
+                    /Library/Logs/DiagnosticReports \
+                    -iname 'FluxCore*' 2>/dev/null)
           if [ -z "$CR" ]; then
             echo "(no FluxCore crash report found)"
           else
             for f in $CR; do echo "----------- $f -----------"; cat "$f"; echo; done | tee crash.txt
           fi
-          echo "===== exception lines across captures ====="
-          grep -aE "Exception|Error|Caused by|at com\.luminadigitale|at java|at org\.robovm|NullPointer|IndexOutOfBounds|IllegalState|UnsatisfiedLink|NoClassDefFound|NoSuchMethod|ClassNotFound|EXC_|SIGSEGV|SIGABRT|Terminating|Fatal" sim-console.log applog.txt crash.txt 2>/dev/null | head -120 || echo "(none)"
 
       - name: Upload full console log
         if: always()
@@ -89,5 +100,7 @@ jobs:
           name: sim-console
           path: |
             sim-console.log
+            full.log
             applog.txt
+            errlines.txt
             crash.txt
