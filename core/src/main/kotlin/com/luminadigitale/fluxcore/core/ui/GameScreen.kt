@@ -5417,8 +5417,11 @@ class GameScreen(
         bodyFont.draw(batch, fitLabelToWidth(state, maxWidth, bodyFont), textStartX, topY - lineHeight(uiTitleFont) - sy(8f))
         bodyFont.color = chromeMuted
         bodyFont.draw(batch, fitLabelToWidth(priceLabel, maxWidth, bodyFont), textStartX, topY - lineHeight(uiTitleFont) - lineHeight(bodyFont) - sy(12f))
+        // Flow the description directly below the price instead of pinning it to the card
+        // bottom, which overlapped the price line on short cards.
+        val descY = topY - lineHeight(uiTitleFont) - lineHeight(bodyFont) * 2f - sy(18f)
         metaFont.color = chromeMuted
-        metaFont.draw(batch, fitLabelToWidth(amountLabel, maxWidth, metaFont), textStartX, rect.y + sy(38f))
+        metaFont.draw(batch, fitLabelToWidth(amountLabel, maxWidth, metaFont), textStartX, descY)
         batch.end()
     }
 
@@ -6429,7 +6432,13 @@ class GameScreen(
             isPrimary -> chromeAccent
             else -> chromeStroke
         }
-        val textBaseColor = chromeInk
+        // Bright (orange) primary buttons need dark text; white-on-orange reads too low
+        // contrast. Premium (blue) and reward (green-glass) buttons keep light text.
+        val textBaseColor = if (isPrimary && !isPremiumLabel && !isRewardBoostLabel) {
+            Color(0.06f, 0.09f, 0.15f, 1f)
+        } else {
+            chromeInk
+        }
 
         shapes.projectionMatrix = camera.combined
         shapes.begin(ShapeRenderer.ShapeType.Filled)
@@ -6493,17 +6502,22 @@ class GameScreen(
         val fillColor = Color(0.23f, 0.79f, 1f, 1f)
         shapes.color = fillColor
         drawRoundedRect(trackX, trackY, fillWidth.coerceAtLeast(knobRadius), trackHeight, trackHeight * 0.5f)
-        shapes.color = Color(0.03f, 0.08f, 0.16f, 1f)
-        shapes.circle(knobX.coerceIn(trackX, trackX + trackWidth), knobY, knobRadius, 24)
-        shapes.color = Color.WHITE.cpy().mul(1f, 1f, 1f, 0.74f)
-        shapes.circle(knobX.coerceIn(trackX, trackX + trackWidth), knobY, knobRadius * 0.55f, 24)
+        // Solid grabbable handle that stays fully on the track (was a dark "hole" that
+        // overflowed the track ends).
+        val knobCx = (trackX + fillWidth).coerceIn(trackX + knobRadius, trackX + trackWidth - knobRadius)
+        shapes.color = Color(0f, 0f, 0f, 0.30f)
+        shapes.circle(knobCx, knobY - 1f, knobRadius + 2f, 26)
+        shapes.color = Color(0.96f, 0.99f, 1f, 1f)
+        shapes.circle(knobCx, knobY, knobRadius, 26)
+        shapes.color = fillColor
+        shapes.circle(knobCx, knobY, knobRadius * 0.42f, 22)
         shapes.end()
 
         shapes.begin(ShapeRenderer.ShapeType.Line)
         shapes.color = chromeStroke
         drawRoundedRectOutline(trackX, trackY, trackWidth, trackHeight, trackHeight * 0.5f)
-        shapes.color = Color.WHITE.cpy().mul(1f, 1f, 1f, 0.48f)
-        shapes.circle(knobX.coerceIn(trackX, trackX + trackWidth), knobY, knobRadius, 24)
+        shapes.color = Color(0.05f, 0.09f, 0.16f, 0.9f)
+        shapes.circle(knobCx, knobY, knobRadius, 26)
         shapes.end()
     }
 
