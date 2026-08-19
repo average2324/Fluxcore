@@ -5132,7 +5132,14 @@ class GameScreen(
         }
         batch.projectionMatrix = camera.combined
         batch.begin()
-        uiTitleFont.color = chromeInk
+        // Colour the title by tone; the separate status chip below duplicated this text
+        // and overlapped it, so it is removed.
+        uiTitleFont.color = when (premiumDialogTone) {
+            ChipTone.SUCCESS -> Color(0.55f, 0.95f, 0.72f, 1f)
+            ChipTone.WARNING -> Color(1f, 0.78f, 0.42f, 1f)
+            ChipTone.ALERT -> Color(1f, 0.5f, 0.45f, 1f)
+            else -> chromeInk
+        }
         val titleFit = fitLabelToWidth(premiumDialogTitle, dialogRect.width - sx(72f), uiTitleFont)
         uiTitleFont.draw(batch, titleFit, centeredX(titleFit, uiTitleFont, dialogRect), dialogRect.y + dialogRect.height - sy(48f))
         bodyFont.color = chromeMuted
@@ -5153,7 +5160,6 @@ class GameScreen(
             if (premiumDialogSecondaryLabel.isNotBlank()) {
                 drawButton(premiumDialogSecondaryRect(), premiumDialogSecondaryLabel, chromeInk)
             }
-            drawStatusChip(premiumDialogChipRect(), premiumDialogTitle, premiumDialogTone, palette)
         }
     }
 
@@ -5197,13 +5203,13 @@ class GameScreen(
             t("Choose a ship style and equip it. Open SHIELDS to buy shield stock.", "Gemi stilini seç ve aktif et. Kalkan stokunu KALKAN sekmesinden al.")
         } else if (!adsEnabled()) {
             t(
-                "Support items: Impact Shield blocks one hit, Time Slow briefly slows hazards. Buy support stock with coins.",
-                "Destek öğeleri: Darbe Kalkanı bir çarpışmayı engeller, Zaman Yavaşlatma kısa süre tehlikeleri yavaşlatır. Destek stokunu coin ile al."
+                "Shield blocks one hit; Slowdown briefly slows hazards. Buy with coins.",
+                "Kalkan bir çarpışmayı engeller; Yavaşlatma tehlikeleri kısaca yavaşlatır."
             )
         } else {
             t(
-                "Support items: Impact Shield blocks one hit, Time Slow slows hazards briefly. Buy with coins; shield can also come from ads.",
-                "Destek öğeleri: Darbe Kalkanı bir çarpışmayı engeller, Zaman Yavaşlatma kısa süre tehlikeleri yavaşlatır. Coin ile al; kalkan reklamdan da kazanılabilir."
+                "Shield blocks one hit; Slowdown slows hazards. Buy with coins or ads.",
+                "Kalkan çarpışma engeller; Yavaşlatma yavaşlatır. Coin veya reklamla al."
             )
         }
         font.color = chromeMuted
@@ -5241,28 +5247,12 @@ class GameScreen(
         metaFont.draw(batch, creditTitle, rowStartX + coinSize + gap + valueWidth + gap, creditY)
         batch.end()
 
+        // Removed the count label that used to sit directly on top of the tabs (it
+        // overlapped them and the same info already shows on the cards/cells).
         val shipsTab = shopTabShipsRect()
         val shieldsTab = shopTabShieldsRect()
         drawButton(shipsTab, t("SHIPS", "GEMİLER"), if (selectedShopCategory == ShopCategory.SHIPS) chromeAccent else chromeInk)
         drawButton(shieldsTab, t("SHIELDS", "KALKAN"), if (selectedShopCategory == ShopCategory.SHIELDS) chromeAccent else chromeInk)
-        val shipCountLabel = if (selectedShopCategory == ShopCategory.SHIPS) {
-            t("UNLOCKED: ${unlockedShipIds.size}/${shipSkins.size}", "AÇILAN: ${unlockedShipIds.size}/${shipSkins.size}")
-        } else {
-            t(
-                "SHIELD $shieldCount/$MAX_SHIELDS • SLOWDOWN $slowPowerCount/$MAX_SLOW_POWERS",
-                "KALKAN $shieldCount/$MAX_SHIELDS • YAVAŞLATMA $slowPowerCount/$MAX_SLOW_POWERS"
-            )
-        }
-        batch.projectionMatrix = camera.combined
-        batch.begin()
-        metaFont.color = chromeMuted
-        metaFont.draw(
-            batch,
-            shipCountLabel,
-            centeredX(shipCountLabel, metaFont),
-            shipsTab.y + shipsTab.height + sy(14f).coerceIn(10f, 22f)
-        )
-        batch.end()
 
         if (selectedShopCategory == ShopCategory.SHIPS) {
             drawShopFeaturedCard(selectedSkin, selectedUnlocked, palette)
@@ -5397,18 +5387,6 @@ class GameScreen(
         } else {
             t("Price: ${item.price} coins", "Fiyat: ${item.price} coin")
         }
-        val amountLabel = t(
-            if (isSlowItem) {
-                "Single-use: slows hazards for 2.5s. Slowdown $slowPowerCount/$MAX_SLOW_POWERS"
-            } else {
-                "Single-use: blocks one collision. Shield $shieldCount/$MAX_SHIELDS"
-            },
-            if (isSlowItem) {
-                "Tek kullanımlık: tehlikeleri 2.5sn yavaşlatır. Yavaşlatma $slowPowerCount/$MAX_SLOW_POWERS"
-            } else {
-                "Tek kullanımlık: bir çarpışmayı engeller. Kalkan $shieldCount/$MAX_SHIELDS"
-            }
-        )
         val topY = rect.y + rect.height - sy(28f)
         val nameFit = fitLabelToWidth(name, maxWidth, uiTitleFont)
         uiTitleFont.color = chromeInk
@@ -5417,11 +5395,8 @@ class GameScreen(
         bodyFont.draw(batch, fitLabelToWidth(state, maxWidth, bodyFont), textStartX, topY - lineHeight(uiTitleFont) - sy(8f))
         bodyFont.color = chromeMuted
         bodyFont.draw(batch, fitLabelToWidth(priceLabel, maxWidth, bodyFont), textStartX, topY - lineHeight(uiTitleFont) - lineHeight(bodyFont) - sy(12f))
-        // Flow the description directly below the price instead of pinning it to the card
-        // bottom, which overlapped the price line on short cards.
-        val descY = topY - lineHeight(uiTitleFont) - lineHeight(bodyFont) * 2f - sy(18f)
-        metaFont.color = chromeMuted
-        metaFont.draw(batch, fitLabelToWidth(amountLabel, maxWidth, metaFont), textStartX, descY)
+        // The per-item description was dropped: on short cards it overflowed below the card
+        // into the next one, and the subtitle already explains what each item does.
         batch.end()
     }
 
